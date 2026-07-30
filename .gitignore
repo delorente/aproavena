@@ -1,0 +1,19 @@
+# Material original sin optimizar (ya versionado optimizado en assets/)
+uploads/
+
+# Sistema operativo
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Temporales
+*.log
+*.tmp
+*.bak

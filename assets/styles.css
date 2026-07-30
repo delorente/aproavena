@@ -1,0 +1,478 @@
+/* ==========================================================================
+   Aproavena — Hoja de estilos central
+   --------------------------------------------------------------------------
+   Todos los estilos del sitio viven aquí. Cada página lo carga con:
+     <link rel="stylesheet" href="./assets/styles.css" />
+   dentro de su <helmet>, y usa clases (.av-*) en lugar de style="" inline.
+
+   Índice:
+     1. Tokens de diseño (variables)
+     2. Base / global
+     3. Utilidades de layout (contenedores, bandas, grillas, espaciado)
+     4. Tipografía (eyebrow, títulos, texto)
+     5. Botones y enlaces de acción
+     6. Nav
+     7. Footer
+     8. Hero
+     9. Tarjetas y bloques (objetivos, socios, noticias)
+    10. Formulario de contacto
+    11. Panel de administración (Admin)
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. Tokens de diseño — cambia un valor aquí y se refleja en todo el sitio
+   --------------------------------------------------------------------------- */
+:root {
+  /* Fondos / superficies */
+  --av-bg:            oklch(97% 0.012 75);
+  --av-surface:       oklch(98% 0.012 75);
+  --av-band:          oklch(94% 0.02 90);
+  --av-dark:          oklch(28% 0.035 110);
+
+  /* Texto */
+  --av-ink:           oklch(24% 0.02 60);   /* títulos */
+  --av-ink-2:         oklch(30% 0.02 60);
+  --av-body:          oklch(34% 0.02 60);   /* párrafos */
+  --av-label:         oklch(52% 0.09 115);  /* eyebrow verde */
+
+  /* Acento (terracota avena) */
+  --av-accent:        oklch(64% 0.15 55);
+  --av-accent-strong: oklch(56% 0.15 55);
+  --av-accent-link:   oklch(45% 0.12 115);  /* enlaces "ver más" */
+
+  /* Enlaces globales */
+  --av-link:          oklch(50% 0.13 55);
+  --av-link-hover:    oklch(42% 0.13 55);
+
+  /* Bordes */
+  --av-border:        oklch(88% 0.02 75);
+  --av-border-soft:   oklch(90% 0.02 75);
+
+  /* Sombra de imágenes destacadas */
+  --av-shadow:        0 28px 50px -24px oklch(30% 0.05 60 / 0.4);
+
+  /* Tipografías */
+  --av-font-serif:    'Source Serif 4', serif;
+  --av-font-sans:     'Public Sans', sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   2. Base / global
+   --------------------------------------------------------------------------- */
+body { margin: 0; background: var(--av-bg); }
+a    { color: var(--av-link); }
+a:hover { color: var(--av-link-hover); }
+
+/* ---------------------------------------------------------------------------
+   3. Layout
+   --------------------------------------------------------------------------- */
+.av-container      { max-width: 1200px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
+.av-container--900  { max-width: 900px; }
+.av-container--1000 { max-width: 1000px; }
+.av-container--780  { max-width: 780px; }
+
+/* Espaciado vertical de secciones */
+.av-py-64 { padding-top: 64px; padding-bottom: 64px; }
+.av-py-72 { padding-top: 72px; padding-bottom: 72px; }
+.av-py-90 { padding-top: 90px; padding-bottom: 90px; }
+.av-pt-24 { padding-top: 24px; }
+.av-pt-32 { padding-top: 32px; }
+.av-pt-48 { padding-top: 48px; }
+.av-pt-56 { padding-top: 56px; }
+.av-pt-64 { padding-top: 64px; }
+.av-pb-24 { padding-bottom: 24px; }
+.av-pb-90 { padding-bottom: 90px; }
+.av-pb-100 { padding-bottom: 100px; }
+
+/* Bandas de fondo a ancho completo */
+.av-band      { background: var(--av-band); }
+.av-band--news { background: var(--av-surface); border-top: 1px solid var(--av-border-soft); }
+
+/* Grillas y filas */
+.av-split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.av-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.av-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.av-stack-24 { display: flex; flex-direction: column; gap: 24px; }
+.av-row-between { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+.av-news-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
+
+/* Reversa visual en grillas de dos columnas (imagen a la izquierda) */
+.av-center { text-align: center; }
+
+/* ---------------------------------------------------------------------------
+   4. Tipografía
+   --------------------------------------------------------------------------- */
+/* Eyebrow / antetítulo */
+.av-eyebrow {
+  font-family: var(--av-font-sans);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--av-label);
+  margin-bottom: 10px;
+}
+.av-eyebrow--wide  { letter-spacing: 0.14em; }
+.av-eyebrow--center { text-align: center; margin-bottom: 24px; }
+.av-eyebrow--on-dark {
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  color: oklch(80% 0.09 60);
+}
+
+/* Títulos (serif) */
+.av-heading { font-family: var(--av-font-serif); color: var(--av-ink); line-height: 1.25; margin: 0; }
+.av-heading--on-image { color: #fff; }
+
+/* Escala de tamaños de título */
+.av-fs-19 { font-size: 19px; }
+.av-fs-21 { font-size: 21px; }
+.av-fs-22 { font-size: 22px; }
+.av-fs-26 { font-size: 26px; }
+.av-fs-27 { font-size: 27px; }
+.av-fs-28 { font-size: 28px; }
+.av-fs-30 { font-size: 30px; }
+.av-fs-32 { font-size: 32px; }
+.av-fs-34 { font-size: 34px; }
+.av-fs-38 { font-size: 38px; }
+.av-fs-46 { font-size: 46px; line-height: 1.12; }
+
+/* Texto de párrafo */
+.av-text { font-family: var(--av-font-sans); font-size: 15.5px; line-height: 1.7; color: var(--av-body); margin: 0; }
+.av-text--16 { font-size: 16px; }
+.av-lead { font-family: var(--av-font-serif); font-size: 22px; line-height: 1.55; color: oklch(26% 0.02 60); margin: 0; }
+
+/* Márgenes reutilizables */
+.av-mb-6  { margin-bottom: 6px; }
+.av-mb-8  { margin-bottom: 8px; }
+.av-mb-10 { margin-bottom: 10px; }
+.av-mb-14 { margin-bottom: 14px; }
+.av-mb-16 { margin-bottom: 16px; }
+.av-mb-18 { margin-bottom: 18px; }
+.av-mb-20 { margin-bottom: 20px; }
+.av-mb-22 { margin-bottom: 22px; }
+.av-mb-26 { margin-bottom: 26px; }
+.av-mb-28 { margin-bottom: 28px; }
+.av-mb-32 { margin-bottom: 32px; }
+.av-mb-36 { margin-bottom: 36px; }
+.av-mb-40 { margin-bottom: 40px; }
+.av-mt-10 { margin-top: 10px; }
+.av-mt-22 { margin-top: 22px; }
+
+/* Alturas de logos */
+.av-h-56 { height: 56px; }
+.av-h-62 { height: 62px; }
+.av-h-64 { height: 64px; }
+
+/* Anchos de medida (legibilidad) */
+.av-mw-15ch { max-width: 15ch; }
+.av-mw-16ch { max-width: 16ch; }
+.av-mw-34ch { max-width: 34ch; }
+.av-mw-52ch { max-width: 52ch; }
+.av-mw-62ch { max-width: 62ch; }
+.av-mw-68ch { max-width: 68ch; }
+.av-mw-780  { max-width: 780px; }
+.av-mx-auto { margin-left: auto; margin-right: auto; }
+
+/* ---------------------------------------------------------------------------
+   5. Botones y enlaces de acción
+   --------------------------------------------------------------------------- */
+.av-btn {
+  font-family: var(--av-font-sans);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 13px 24px;
+  border-radius: 3px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+}
+.av-btn--primary { background: var(--av-accent); color: #fff; }
+.av-btn--outline { background: transparent; border: 1px solid oklch(85% 0.02 90); color: #fff; }
+.av-btn--submit  { font-weight: 700; padding: 15px 30px; transition: background 0.15s ease; }
+.av-btn--sm      { padding: 12px 24px; }
+
+/* Enlace de panel (contorno neutro, ej. "Panel de socios →") */
+.av-panel-link {
+  font-family: var(--av-font-sans);
+  font-size: 13.5px;
+  color: oklch(45% 0.02 60);
+  text-decoration: none;
+  border: 1px solid oklch(84% 0.02 75);
+  padding: 8px 14px;
+  border-radius: 2px;
+}
+
+/* Enlace "ver más →" */
+.av-more {
+  font-family: var(--av-font-sans);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--av-accent-link);
+  text-decoration: none;
+}
+.av-more--sm { font-size: 14.5px; }
+
+/* Botón de contorno neutro (paneles) */
+.av-btn-ghost {
+  font-family: var(--av-font-sans);
+  font-weight: 600;
+  font-size: 14px;
+  background: transparent;
+  border: 1px solid oklch(84% 0.02 75);
+  padding: 10px 18px;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ---------------------------------------------------------------------------
+   6. Nav
+   --------------------------------------------------------------------------- */
+.av-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--av-surface);
+  border-bottom: 1px solid var(--av-border-soft);
+}
+.av-nav__inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 14px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.av-nav__brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.av-nav__logo  { height: 85px; width: auto; display: block; }
+.av-nav__brand-text {
+  font-family: var(--av-font-serif); font-weight: 600; font-size: 20px;
+  color: oklch(30% 0.03 60); letter-spacing: 0.01em;
+}
+.av-nav__links {
+  display: flex; gap: 28px; flex-wrap: wrap;
+  font-family: var(--av-font-sans); font-size: 15px; font-weight: 500;
+}
+a.av-link { text-decoration: none; }
+a.av-link:hover { color: var(--av-accent) !important; }
+
+/* ---------------------------------------------------------------------------
+   7. Footer
+   --------------------------------------------------------------------------- */
+.av-footer { background: var(--av-dark); color: oklch(94% 0.01 90); }
+.av-footer__inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 48px 32px 28px;
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px;
+}
+.av-footer__brand { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.av-footer__logo  { height: 44px; width: auto; filter: brightness(0) invert(1); opacity: 0.9; }
+.av-footer__brand-text { font-family: var(--av-font-serif); font-weight: 600; font-size: 17px; }
+.av-footer__desc {
+  font-family: var(--av-font-sans); font-size: 14px; line-height: 1.6;
+  color: oklch(85% 0.015 90); max-width: 36ch; margin: 0;
+}
+.av-footer__col { font-family: var(--av-font-sans); font-size: 14px; }
+.av-footer__heading { font-weight: 600; margin-bottom: 12px; color: oklch(95% 0.01 90); }
+.av-footer__list { display: flex; flex-direction: column; gap: 8px; }
+.av-footer__list--contact { color: oklch(85% 0.015 90); }
+.av-footer__link { color: oklch(85% 0.015 90); text-decoration: none; }
+.av-footer__cta  { color: oklch(72% 0.13 55); text-decoration: none; font-weight: 600; }
+.av-footer__ig   { display: inline-flex; align-items: center; gap: 8px; color: oklch(85% 0.015 90); text-decoration: none; margin-top: 4px; }
+.av-footer__copy {
+  border-top: 1px solid oklch(40% 0.03 110);
+  padding: 16px 32px; text-align: center;
+  font-family: var(--av-font-sans); font-size: 12.5px; color: oklch(70% 0.015 90);
+}
+
+/* Ícono de Instagram (dibujado con bordes) */
+.av-ig-icon { width: 22px; height: 22px; border: 1.6px solid currentColor; border-radius: 7px; position: relative; display: inline-block; flex-shrink: 0; }
+.av-ig-icon__lens { position: absolute; inset: 5px; border: 1.6px solid currentColor; border-radius: 50%; }
+.av-ig-icon__dot  { position: absolute; top: 3px; right: 3px; width: 2.5px; height: 2.5px; background: currentColor; border-radius: 50%; }
+
+/* ---------------------------------------------------------------------------
+   8. Hero
+   --------------------------------------------------------------------------- */
+.av-hero { position: relative; overflow: hidden; }
+.av-hero--560 { height: 560px; }
+.av-hero--340 { height: 340px; }
+.av-hero--300 { height: 300px; }
+.av-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.av-hero__img--low { object-position: center 30%; }
+.av-hero__overlay { position: absolute; inset: 0; }
+.av-hero__overlay--gradient { background: linear-gradient(90deg, oklch(22% 0.03 100 / 0.72) 0%, oklch(22% 0.03 100 / 0.32) 55%, oklch(22% 0.03 100 / 0.08) 100%); }
+.av-hero__overlay--55 { background: oklch(20% 0.03 100 / 0.55); }
+.av-hero__overlay--50 { background: oklch(20% 0.03 100 / 0.5); }
+.av-hero__inner {
+  position: relative; max-width: 1200px; margin: 0 auto; height: 100%;
+  display: flex; flex-direction: column; justify-content: center; padding: 0 32px;
+}
+.av-hero-title { font-family: var(--av-font-serif); color: #fff; margin: 0; }
+.av-hero-text  { font-family: var(--av-font-sans); font-size: 17px; line-height: 1.6; color: oklch(94% 0.01 90); margin: 0; }
+.av-hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* ---------------------------------------------------------------------------
+   9. Tarjetas y bloques
+   --------------------------------------------------------------------------- */
+/* Imagen destacada con sombra */
+.av-figure { width: 100%; object-fit: cover; border-radius: 2px; box-shadow: var(--av-shadow); }
+.av-figure--340 { height: 340px; }
+.av-figure--320 { height: 320px; }
+.av-figure--mh380 { max-height: 380px; }
+
+/* Rejilla de objetivos (home) */
+.av-objgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--av-border-soft); border: 1px solid var(--av-border-soft); }
+
+/* Tarjeta de objetivo (Quiénes somos) */
+.av-obj-card { background: var(--av-surface); border: 1px solid var(--av-border); border-radius: 2px; padding: 24px 26px; display: flex; gap: 16px; }
+.av-obj-num { font-family: var(--av-font-serif); font-size: 20px; color: var(--av-accent); flex-shrink: 0; display: inline-block; transition: transform 0.25s ease, color 0.25s ease; }
+.av-obj-text { font-family: var(--av-font-sans); font-size: 15px; line-height: 1.6; color: var(--av-ink-2); margin: 0; }
+
+/* Logos de asociados (home) */
+.av-partners { display: flex; align-items: center; justify-content: center; gap: 64px; flex-wrap: wrap; }
+.av-partner { display: block; transition: transform 0.2s ease; }
+.av-partner__img { width: auto; object-fit: contain; }
+.av-partner--text { font-family: var(--av-font-serif); font-size: 28px; color: oklch(35% 0.03 40); font-weight: 600; text-decoration: none; transition: transform 0.2s ease; }
+
+/* Tarjetas de noticias */
+.av-news-link { text-decoration: none; display: block; }
+.av-news-card { text-decoration: none; display: block; background: var(--av-surface); border: 1px solid var(--av-border); border-radius: 2px; overflow: hidden; }
+.av-news-img { width: 100%; object-fit: cover; }
+.av-news-img--170 { height: 170px; margin-bottom: 14px; border-radius: 2px; }
+.av-news-img--180 { height: 180px; }
+.av-news-body { padding: 20px 22px; }
+.av-news-date { font-family: var(--av-font-sans); font-size: 12.5px; color: var(--av-label); font-weight: 600; }
+.av-news-title { font-family: var(--av-font-serif); color: var(--av-ink); line-height: 1.35; }
+.av-news-title--18 { font-size: 18px; }
+.av-news-title--19 { font-size: 19px; }
+.av-news-excerpt { font-family: var(--av-font-sans); font-size: 14px; line-height: 1.6; color: oklch(38% 0.02 60); margin: 0; }
+
+/* Directorio de socios */
+.av-socio { display: grid; grid-template-columns: 220px 1fr; background: var(--av-surface); border: 1px solid var(--av-border); border-left: 4px solid var(--av-accent); border-radius: 2px; overflow: hidden; transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.av-socio__logo { background: #fff; display: flex; align-items: center; justify-content: center; padding: 30px; border-right: 1px solid var(--av-border-soft); }
+.av-socio__logo-text { font-family: var(--av-font-serif); font-size: 30px; font-weight: 600; color: oklch(35% 0.03 40); }
+.av-socio__body { padding: 30px 34px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+.av-socio__head { display: flex; align-items: center; gap: 12px; }
+.av-socio__index { font-family: var(--av-font-serif); font-size: 13px; color: oklch(60% 0.1 60); font-weight: 600; }
+.av-socio__name { font-family: var(--av-font-serif); font-size: 21px; color: var(--av-ink); margin: 0; }
+.av-socio__desc { font-family: var(--av-font-sans); font-size: 15px; line-height: 1.65; color: oklch(36% 0.02 60); margin: 0; max-width: 62ch; }
+
+/* Detalle de noticia */
+.av-back { font-family: var(--av-font-sans); font-size: 13.5px; color: var(--av-accent-link); text-decoration: none; }
+.av-link-accent { font-family: var(--av-font-sans); color: var(--av-accent-link); text-decoration: none; }
+.av-article-date { font-family: var(--av-font-sans); font-size: 13px; color: var(--av-label); font-weight: 600; margin: 24px 0 10px; }
+.av-article-body { font-family: var(--av-font-sans); font-size: 17px; line-height: 1.7; color: var(--av-ink-2); margin: 0 0 24px; }
+.av-pdf-link { display: inline-block; font-family: var(--av-font-sans); font-weight: 600; font-size: 14.5px; color: var(--av-accent-link); border: 1px solid oklch(84% 0.02 75); padding: 10px 18px; border-radius: 2px; text-decoration: none; }
+
+/* ---------------------------------------------------------------------------
+   10. Formulario de contacto
+   --------------------------------------------------------------------------- */
+.av-contact { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 0; }
+.av-contact__aside { position: relative; background: var(--av-dark); border-radius: 4px 0 0 4px; padding: 56px 44px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+.av-contact__aside-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.16; }
+.av-contact__aside-inner { position: relative; }
+.av-contact__aside-title { font-family: var(--av-font-serif); font-size: 32px; color: #fff; line-height: 1.2; margin: 0 0 18px; max-width: 16ch; }
+.av-contact__aside-text { font-family: var(--av-font-sans); font-size: 15px; line-height: 1.7; color: oklch(85% 0.015 90); max-width: 34ch; margin: 0; }
+.av-contact__meta { position: relative; display: flex; flex-direction: column; gap: 20px; margin-top: 48px; }
+.av-contact__meta-item { border-top: 1px solid oklch(45% 0.03 110); padding-top: 18px; }
+.av-contact__meta-label { font-family: var(--av-font-sans); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: oklch(72% 0.1 60); font-weight: 700; margin-bottom: 6px; }
+.av-contact__meta-value { font-family: var(--av-font-sans); font-size: 15.5px; color: #fff; text-decoration: none; }
+.av-contact__main { border-top: 3px solid var(--av-accent); padding: 56px 0 56px 48px; }
+.av-contact__eyebrow { font-family: var(--av-font-sans); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(78% 0.1 60); font-weight: 700; margin-bottom: 14px; }
+
+.av-form { display: flex; flex-direction: column; gap: 26px; }
+.av-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.av-field label { font-family: var(--av-font-sans); font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em; color: oklch(45% 0.09 115); display: block; margin-bottom: 4px; }
+.av-field input, .av-field textarea {
+  border: none; border-bottom: 2px solid var(--av-border); border-radius: 0;
+  padding: 10px 2px; font-family: var(--av-font-sans); font-size: 15.5px;
+  width: 100%; box-sizing: border-box; background: transparent;
+}
+.av-field input:focus, .av-field textarea:focus { outline: none; border-bottom-color: var(--av-accent); }
+.av-resize-v { resize: vertical; }
+
+/* Mensaje de éxito del formulario */
+.av-sent { height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.av-sent__check { width: 44px; height: 44px; border-radius: 50%; background: oklch(94% 0.05 130); color: oklch(45% 0.12 130); display: flex; align-items: center; justify-content: center; font-size: 20px; font-family: var(--av-font-serif); }
+.av-sent__title { font-family: var(--av-font-serif); font-size: 22px; color: var(--av-ink); margin: 0; }
+.av-sent__text  { font-family: var(--av-font-sans); font-size: 14.5px; color: oklch(40% 0.02 60); margin: 0; }
+.av-self-start { align-self: flex-start; }
+
+/* ---------------------------------------------------------------------------
+   11. Panel de administración (Admin)
+   --------------------------------------------------------------------------- */
+.av-notice { background: oklch(96% 0.03 80); border: 1px solid oklch(80% 0.05 70); border-radius: 3px; padding: 24px; font-family: var(--av-font-sans); font-size: 14.5px; line-height: 1.7; color: var(--av-ink-2); }
+.av-stack-16 { display: flex; flex-direction: column; gap: 16px; }
+.av-admin-form { max-width: 360px; display: flex; flex-direction: column; gap: 16px; }
+.av-admin-label { font-family: var(--av-font-sans); font-size: 13px; font-weight: 600; color: var(--av-ink-2); display: block; margin-bottom: 6px; }
+.av-input { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid oklch(84% 0.02 75); border-radius: 2px; font-family: var(--av-font-sans); font-size: 14.5px; }
+.av-input:focus { outline: 2px solid var(--av-accent); }
+.av-error { font-family: var(--av-font-sans); font-size: 13.5px; color: oklch(50% 0.16 30); }
+.av-status { font-family: var(--av-font-sans); font-size: 13.5px; color: var(--av-accent-link); }
+.av-admin-session { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+.av-admin-session__who { font-family: var(--av-font-sans); font-size: 14px; color: var(--av-body); }
+.av-btn-ghost--sm { font-family: var(--av-font-sans); font-size: 13.5px; background: transparent; border: 1px solid oklch(84% 0.02 75); padding: 8px 14px; border-radius: 2px; cursor: pointer; }
+.av-card-box { background: var(--av-surface); border: 1px solid var(--av-border); border-radius: 3px; padding: 28px; margin-bottom: 40px; }
+.av-card-box__title { font-family: var(--av-font-serif); font-size: 19px; margin: 0 0 20px; color: var(--av-ink); }
+.av-form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.av-file-note { width: 100%; font-family: var(--av-font-sans); font-size: 13.5px; }
+.av-cover-preview { height: 100px; width: 180px; object-fit: cover; border-radius: 2px; }
+.av-checkbox-row { display: flex; align-items: center; gap: 8px; font-family: var(--av-font-sans); font-size: 14px; color: var(--av-body); }
+.av-btn-row { display: flex; gap: 12px; }
+.av-btn-primary-sm { font-family: var(--av-font-sans); font-weight: 600; font-size: 15px; background: var(--av-accent); color: #fff; padding: 12px 24px; border: none; border-radius: 3px; cursor: pointer; }
+.av-btn-secondary-sm { font-family: var(--av-font-sans); font-weight: 600; font-size: 15px; background: transparent; border: 1px solid oklch(84% 0.02 75); padding: 12px 24px; border-radius: 3px; cursor: pointer; }
+.av-list-title { font-family: var(--av-font-serif); font-size: 19px; margin: 0 0 18px; color: var(--av-ink); }
+.av-rows { display: flex; flex-direction: column; gap: 12px; }
+.av-row-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: var(--av-surface); border: 1px solid var(--av-border); border-radius: 2px; padding: 14px 18px; }
+.av-row-item__title { font-family: var(--av-font-sans); font-weight: 600; font-size: 14.5px; color: var(--av-ink); }
+.av-row-item__meta { font-family: var(--av-font-sans); font-size: 12.5px; color: oklch(50% 0.02 60); }
+.av-row-item__actions { display: flex; gap: 10px; flex-shrink: 0; }
+.av-btn-mini { font-family: var(--av-font-sans); font-size: 13px; background: transparent; border: 1px solid oklch(84% 0.02 75); padding: 7px 12px; border-radius: 2px; cursor: pointer; }
+.av-btn-mini--danger { border-color: oklch(80% 0.08 30); color: oklch(50% 0.16 30); }
+
+/* ---------------------------------------------------------------------------
+   12. Cifras e infografía (industria / La Avena)
+   --------------------------------------------------------------------------- */
+/* Banda oscura para cifras destacadas */
+.av-band--dark { background: var(--av-dark); }
+
+/* Fila de cifras (stat tiles) */
+.av-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
+.av-stat__num { font-family: var(--av-font-serif); font-size: 42px; font-weight: 600; line-height: 1.1; color: var(--av-accent-strong); margin-bottom: 10px; }
+.av-stat__label { font-family: var(--av-font-sans); font-size: 14px; line-height: 1.5; color: var(--av-body); }
+.av-stats--on-dark .av-stat__num { color: oklch(78% 0.12 60); }
+.av-stats--on-dark .av-stat__label { color: oklch(88% 0.015 90); }
+.av-stat-note { font-family: var(--av-font-sans); font-size: 12.5px; color: oklch(50% 0.02 60); margin: 28px 0 0; text-align: center; }
+.av-stat-note--on-dark { color: oklch(72% 0.015 90); }
+
+/* Tabla de composición nutricional */
+.av-ntable-wrap { overflow-x: auto; }
+.av-ntable { width: 100%; border-collapse: collapse; font-family: var(--av-font-sans); font-size: 14.5px; background: var(--av-surface); border: 1px solid var(--av-border); }
+.av-ntable th { font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; text-align: left; background: var(--av-dark); color: oklch(94% 0.01 90); padding: 12px 16px; font-weight: 600; }
+.av-ntable td { padding: 10px 16px; border-top: 1px solid var(--av-border-soft); color: var(--av-ink-2); }
+.av-ntable tbody tr:nth-child(even) { background: var(--av-bg); }
+.av-ntable th:nth-child(2), .av-ntable td:nth-child(2),
+.av-ntable th:nth-child(3), .av-ntable td:nth-child(3) { text-align: right; white-space: nowrap; }
+.av-table-note { font-family: var(--av-font-sans); font-size: 12.5px; line-height: 1.6; color: oklch(50% 0.02 60); margin: 10px 0 0; }
+
+/* Tarjeta de propiedad / uso (La Avena) */
+.av-prop-card { background: var(--av-surface); border: 1px solid var(--av-border); border-top: 3px solid var(--av-accent); border-radius: 2px; padding: 24px 26px; }
+.av-prop-card__title { font-family: var(--av-font-serif); font-size: 18px; color: var(--av-ink); margin: 0 0 8px; }
+
+/* Lista de beneficios (borde izquierdo acento) */
+.av-benefits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 32px; text-align: left; }
+.av-benefit { font-family: var(--av-font-sans); font-size: 15px; line-height: 1.65; color: var(--av-body); padding-left: 16px; border-left: 3px solid var(--av-accent); margin: 0; }
+.av-benefit strong { color: var(--av-ink); }
+
+/* Barras de exportación por producto */
+.av-exp { display: flex; flex-direction: column; gap: 20px; }
+.av-exp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; font-family: var(--av-font-sans); }
+.av-exp-name { font-size: 14.5px; font-weight: 600; color: var(--av-ink-2); }
+.av-exp-val { font-size: 14px; font-weight: 600; color: var(--av-ink); }
+.av-exp-track { height: 12px; background: var(--av-surface); border-radius: 0 4px 4px 0; overflow: hidden; }
+.av-exp-fill { height: 100%; background: var(--av-accent); border-radius: 0 4px 4px 0; min-width: 2px; }
+
+/* Tarjetas de mercados clave */
+.av-markets { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.av-market { background: var(--av-surface); border: 1px solid var(--av-border); border-radius: 2px; padding: 24px 28px; }
+.av-market__title { font-family: var(--av-font-serif); font-size: 18px; color: var(--av-ink); margin: 0 0 10px; }
+.av-market__list { font-family: var(--av-font-sans); font-size: 15px; line-height: 1.9; color: var(--av-body); margin: 0; padding-left: 18px; }
