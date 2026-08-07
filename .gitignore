@@ -1,6 +1,13 @@
 # Material original sin optimizar (ya versionado optimizado en assets/)
 uploads/
 
+# Credenciales de base de datos y correo (usar inc/config.example.php)
+inc/config.php
+
+# Archivos subidos desde el panel: son contenido, no código
+media/noticias/*
+!media/noticias/.gitkeep
+
 # Sistema operativo
 Thumbs.db
 ehthumbs.db

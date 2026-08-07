@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/styles.css" />
+</helmet>
+<header class="av-nav">
+  <div class="av-nav__inner">
+    <a href="./index.html" class="av-nav__brand">
+      <img src="./assets/logo-aproavena.png" alt="Aproavena" class="av-nav__logo" />
+      <span class="av-nav__brand-text">Aproavena</span>
+    </a>
+    <nav class="av-nav__links">
+      <sc-for list="{{ links }}" as="link" hint-placeholder-count="6">
+        <a class="av-link" href="{{ link.href }}" style="{{ link.style }}">{{ link.label }}</a>
+      </sc-for>
+    </nav>
+  </div>
+</header>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;active&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;inicio&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;inicio&quot;, &quot;quienes&quot;, &quot;avena&quot;, &quot;directorio&quot;, &quot;noticias&quot;, &quot;contacto&quot;]}}">
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active || "";
+    const base = [
+      ["inicio", "Inicio", "./index.html"],
+      ["quienes", "Quiénes somos", "./QuienesSomos.dc.html"],
+      ["avena", "La Avena", "./LaAvena.dc.html"],
+      ["directorio", "Directorio y socios", "./Directorio.dc.html"],
+      ["noticias", "Noticias", "./Noticias.dc.html"],
+      ["contacto", "Contacto", "./Contacto.dc.html"]
+    ];
+    const dark = "color: oklch(32% 0.03 60);";
+    const on = "color: oklch(58% 0.14 55); font-weight: 700;";
+    const links = base.map(([key, label, href]) => ({
+      label, href, style: key === active ? on : dark
+    }));
+    return { links };
+  }
+}
+
+</script>
+</body>
+</html>

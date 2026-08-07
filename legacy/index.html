@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="./assets/styles.css" />
+</helmet>
+
+<dc-import name="Nav" active="inicio" hint-size="100%,84px"></dc-import>
+
+<section class="av-hero av-hero--560">
+  <img src="./assets/foto-campo-cielo.webp" alt="Campo de avena bajo cielo abierto" class="av-hero__img" />
+  <div class="av-hero__overlay av-hero__overlay--gradient"></div>
+  <div class="av-hero__inner">
+    <div class="av-eyebrow av-eyebrow--on-dark av-mb-14">Asociación de Procesadores de Avena de Chile A.G.</div>
+    <h1 class="av-hero-title av-fs-46 av-mw-15ch av-mb-18">Impulsando el cultivo y procesamiento experto de la avena chilena</h1>
+    <p class="av-hero-text av-mw-52ch av-mb-28">Reunimos a la industria procesadora de avena de Chile para velar por sus intereses, fortalecer la calidad de sus productos y propiciar el cultivo del cereal en todo el país.</p>
+    <div class="av-hero-actions">
+      <a href="./QuienesSomos.dc.html" class="av-btn av-btn--primary">Conoce la Asociación</a>
+      <a href="./Noticias.dc.html" class="av-btn av-btn--outline">Ver noticias</a>
+    </div>
+  </div>
+</section>
+
+<section class="av-container av-py-72">
+  <div class="av-eyebrow">Nuestros objetivos</div>
+  <h2 class="av-heading av-fs-30 av-mb-40 av-mw-34ch">Trabajamos por una industria avenera más fuerte, técnica y representada</h2>
+  <div ref="{{ objetivosRef }}" class="av-objgrid">
+    <sc-for list="{{ objetivos }}" as="obj" hint-placeholder-count="5">
+      <div style="{{ obj.style }}">
+        <div style="{{ obj.numStyle }}" style-hover="transform: scale(1.55) translateX(6px); color: oklch(50% 0.16 60);">{{ obj.n }}</div>
+        <p class="av-obj-text">{{ obj.text }}</p>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section class="av-band">
+  <div class="av-container av-py-72 av-split">
+    <div>
+      <div class="av-eyebrow">La avena</div>
+      <h2 class="av-heading av-fs-30 av-mb-18">Expertos en cultivo, procesamiento y calidad del grano</h2>
+      <p class="av-text av-mb-26">Desde la siembra en el sur de Chile hasta el producto elaborado, acompañamos los estándares técnicos que hacen de la avena nacional un cereal de referencia en calidad e inocuidad.</p>
+      <a href="./LaAvena.dc.html" class="av-more">Ver el proceso completo →</a>
+    </div>
+    <img src="./assets/foto-espigas-avena.webp" alt="Espigas de avena" class="av-figure av-figure--340" />
+  </div>
+</section>
+
+<section class="av-band--dark">
+  <div class="av-container av-py-64">
+    <div class="av-eyebrow av-eyebrow--center av-eyebrow--on-dark">La industria en cifras</div>
+    <div class="av-stats av-stats--on-dark">
+      <div class="av-stat"><div class="av-stat__num">+70%</div><div class="av-stat__label">De las exportaciones de avena procesada del país</div></div>
+      <div class="av-stat"><div class="av-stat__num">97.000 ha</div><div class="av-stat__label">Cultivadas a nivel nacional (2025)</div></div>
+      <div class="av-stat"><div class="av-stat__num">203.000 t</div><div class="av-stat__label">Exportadas al año</div></div>
+      <div class="av-stat"><div class="av-stat__num">+500</div><div class="av-stat__label">Empleos directos y 2.000 indirectos</div></div>
+    </div>
+    <p class="av-stat-note av-stat-note--on-dark"><a href="./QuienesSomos.dc.html" class="av-more" style="color: oklch(80% 0.1 60);">Conoce más sobre la industria →</a></p>
+  </div>
+</section>
+
+<section class="av-container av-py-64">
+  <div class="av-eyebrow av-eyebrow--center">Nuestros asociados</div>
+  <div class="av-partners">
+    <a href="#" class="av-partner" style-hover="transform: scale(1.15);"><img src="./assets/socio-eg.jpg" alt="Empresas Gorbea" class="av-partner__img av-h-56" /></a>
+    <a href="#" class="av-partner" style-hover="transform: scale(1.15);"><img src="./assets/socio-itata.png" alt="Itata" class="av-partner__img av-h-62" /></a>
+    <a href="#" class="av-partner" style-hover="transform: scale(1.15);"><img src="./assets/socio-aeg.jpg" alt="AEG Nutrición" class="av-partner__img av-h-64" /></a>
+    <a href="#" class="av-partner" style-hover="transform: scale(1.15);"><img src="./assets/socio-agrotop.jpg" alt="Agrotop" class="av-partner__img av-h-56" /></a>
+    <a href="#" class="av-partner av-partner--text" style-hover="transform: scale(1.15);">Carozzi</a>
+  </div>
+  <div class="av-center av-mt-22">
+    <a href="./Directorio.dc.html" class="av-more av-more--sm">Ver directorio completo de socios →</a>
+  </div>
+</section>
+
+<section class="av-band--news">
+  <div class="av-container av-py-64">
+    <div class="av-news-head">
+      <h2 class="av-heading av-fs-28">Últimas noticias</h2>
+      <a href="./Noticias.dc.html" class="av-more av-more--sm">Ver todas →</a>
+    </div>
+    <div class="av-grid-3">
+      <sc-if value="{{ loaded }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ news }}" as="item" hint-placeholder-count="3">
+          <a href="{{ item.href }}" class="av-news-link">
+            <img src="{{ item.cover_url }}" alt="{{ item.title }}" class="av-news-img av-news-img--170" />
+            <div class="av-news-date av-mb-6">{{ item.dateLabel }}</div>
+            <div class="av-news-title av-news-title--18">{{ item.title }}</div>
+          </a>
+        </sc-for>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<dc-import name="Footer" hint-size="100%,220px"></dc-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { news: null, loaded: false, objetivosVisible: false };
+  objetivosRef = React.createRef();
+
+  async componentDidMount() {
+    const el = this.objetivosRef.current;
+    if (el && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          this.setState({ objetivosVisible: true });
+          io.disconnect();
+        }
+      }, { threshold: 0.2 });
+      io.observe(el);
+    } else {
+      this.setState({ objetivosVisible: true });
+    }
+    try {
+      const cfg = await import("./assets/supabase-config.js");
+      const client = cfg.getClient();
+      if (client) {
+        const { data, error } = await client
+          .from("noticias")
+          .select("*")
+          .eq("published", true)
+          .order("published_at", { ascending: false })
+          .limit(3);
+        if (!error && data && data.length) {
+          this.setState({ news: data, loaded: true });
+          return;
+        }
+      }
+    } catch (e) {}
+    const { FALLBACK_NEWS } = await import("./assets/news-data.js");
+    this.setState({ news: FALLBACK_NEWS.slice(0, 3), loaded: true });
+  }
+
+  renderVals() {
+    const objetivos = [
+      { n: "01", text: "Informar a las autoridades sobre problemas y necesidades de sus asociados." },
+      { n: "02", text: "Representar los intereses de los asociados frente a organismos públicos y privados." },
+      { n: "03", text: "Propiciar el cultivo de avena en todo el país." },
+      { n: "04", text: "Fortalecer los atributos de calidad e inocuidad de los productos elaborados de avena nacional." },
+      { n: "05", text: "Difundir el consumo de avena." },
+      { n: "06", text: "Estudiar problemas comunes de los asociados y cooperar en la solución de dificultades del rubro." }
+    ];
+    const objetivosConEstilo = objetivos.map((o, i) => ({
+      ...o,
+      style: `background: oklch(97% 0.012 75); padding: 28px 26px; opacity: ${this.state.objetivosVisible ? 1 : 0}; transform: translateY(${this.state.objetivosVisible ? 0 : 18}px); transition: opacity 0.5s ease, transform 0.5s ease; transition-delay: ${i * 90}ms;`,
+      numStyle: "font-family: 'Source Serif 4', serif; font-size: 26px; color: oklch(64% 0.15 55); margin-bottom: 10px; display: inline-block; transition: transform 0.25s ease, color 0.25s ease;"
+    }));
+    const news = (this.state.news || []).map(n => ({
+      title: n.title,
+      cover_url: n.cover_url || "./assets/foto-procesamiento-grano.webp",
+      href: `./NoticiaDetalle.dc.html?id=${n.id}`,
+      dateLabel: new Date(n.published_at).toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" })
+    }));
+    return { objetivos: objetivosConEstilo, news, loaded: this.state.loaded };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="./assets/styles.css" />
+</helmet>
+
+<dc-import name="Nav" active="noticias" hint-size="100%,84px"></dc-import>
+
+<sc-if value="{{ found }}" hint-placeholder-val="{{ true }}">
+  <section class="av-hero av-hero--340">
+    <img src="{{ item.cover_url }}" alt="{{ item.title }}" class="av-hero__img" />
+    <div class="av-hero__overlay av-hero__overlay--50"></div>
+  </section>
+  <section class="av-container av-container--780 av-pt-48 av-pb-90">
+    <a href="./Noticias.dc.html" class="av-back">← Volver a noticias</a>
+    <div class="av-article-date">{{ item.dateLabel }}</div>
+    <h1 class="av-heading av-fs-32 av-mb-22">{{ item.title }}</h1>
+    <p class="av-article-body">{{ item.body }}</p>
+    <sc-if value="{{ item.pdf_url }}" hint-placeholder-val="{{ false }}">
+      <a href="{{ item.pdf_url }}" target="_blank" class="av-pdf-link">Leer publicación original (PDF) →</a>
+    </sc-if>
+  </section>
+</sc-if>
+<sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
+  <section class="av-container av-container--780 av-py-90 av-center">
+    <h1 class="av-heading av-fs-26">Noticia no encontrada</h1>
+    <a href="./Noticias.dc.html" class="av-link-accent">← Volver a noticias</a>
+  </section>
+</sc-if>
+
+<dc-import name="Footer" hint-size="100%,220px"></dc-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { item: null, checked: false };
+
+  async componentDidMount() {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) { this.setState({ checked: true }); return; }
+    try {
+      const cfg = await import("./assets/supabase-config.js");
+      const client = cfg.getClient();
+      if (client) {
+        const { data, error } = await client.from("noticias").select("*").eq("id", id).maybeSingle();
+        if (!error && data) { this.setState({ item: data, checked: true }); return; }
+      }
+    } catch (e) {}
+    const { FALLBACK_NEWS } = await import("./assets/news-data.js");
+    const found = FALLBACK_NEWS.find(n => n.id === id) || null;
+    this.setState({ item: found, checked: true });
+  }
+
+  renderVals() {
+    const raw = this.state.item;
+    const item = raw ? {
+      title: raw.title,
+      body: raw.body,
+      cover_url: raw.cover_url || "./assets/foto-procesamiento-grano.webp",
+      pdf_url: raw.pdf_url || "",
+      dateLabel: new Date(raw.published_at).toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" })
+    } : null;
+    return {
+      item: item || { title: "", body: "", cover_url: "", pdf_url: "", dateLabel: "" },
+      found: !!item,
+      notFound: this.state.checked && !item
+    };
+  }
+}
+
+</script>
+</body>
+</html>

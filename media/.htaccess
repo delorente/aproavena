@@ -1,0 +1,22 @@
+# Carpeta de archivos subidos desde el panel.
+# Aquí solo puede haber imágenes y PDF: si alguien lograra colar un .php,
+# esta regla impide que Apache lo ejecute y lo entrega como texto plano.
+
+php_flag engine off
+
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+
+<FilesMatch "\.(php|php[0-9]|phtml|phar|pl|py|cgi|asp|sh|htaccess)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+Options -Indexes -ExecCGI
+AddType text/plain .php .phtml .phar

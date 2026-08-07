@@ -160,9 +160,8 @@ a:hover { color: var(--av-link-hover); }
 .av-mt-22 { margin-top: 22px; }
 
 /* Alturas de logos */
-.av-h-56 { height: 56px; }
-.av-h-62 { height: 62px; }
-.av-h-64 { height: 64px; }
+/* (las utilidades av-h-* se retiraron: los logos de socios ahora usan la caja
+   normalizada .av-partner__img / .av-socio__img) */
 
 /* Anchos de medida (legibilidad) */
 .av-mw-15ch { max-width: 15ch; }
@@ -330,7 +329,11 @@ a.av-link:hover { color: var(--av-accent) !important; }
 /* Logos de asociados (home) */
 .av-partners { display: flex; align-items: center; justify-content: center; gap: 64px; flex-wrap: wrap; }
 .av-partner { display: block; transition: transform 0.2s ease; }
-.av-partner__img { width: auto; object-fit: contain; }
+/* Caja común para todos los logos de socios: se limitan ancho Y alto a la vez,
+   así un logotipo ancho queda topado por el ancho y uno compacto por el alto,
+   en vez de que el ancho crezca sin control al fijar solo la altura.
+   Requiere que los archivos vengan recortados al ras, sin margen interno. */
+.av-partner__img { max-width: 140px; max-height: 52px; width: auto; height: auto; object-fit: contain; }
 .av-partner--text { font-family: var(--av-font-serif); font-size: 28px; color: oklch(35% 0.03 40); font-weight: 600; text-decoration: none; transition: transform 0.2s ease; }
 
 /* Tarjetas de noticias */
@@ -349,6 +352,9 @@ a.av-link:hover { color: var(--av-accent) !important; }
 /* Directorio de socios */
 .av-socio { display: grid; grid-template-columns: 220px 1fr; background: var(--av-surface); border: 1px solid var(--av-border); border-left: 4px solid var(--av-accent); border-radius: 2px; overflow: hidden; transition: box-shadow 0.2s ease, transform 0.2s ease; }
 .av-socio__logo { background: #fff; display: flex; align-items: center; justify-content: center; padding: 30px; border-right: 1px solid var(--av-border-soft); }
+/* Misma idea que .av-partner__img, con la caja mayor del directorio.
+   La columna mide 220px y el padding se come 60, quedan 160 útiles. */
+.av-socio__img { max-width: 150px; max-height: 64px; width: auto; height: auto; object-fit: contain; }
 .av-socio__logo-text { font-family: var(--av-font-serif); font-size: 30px; font-weight: 600; color: oklch(35% 0.03 40); }
 .av-socio__body { padding: 30px 34px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
 .av-socio__head { display: flex; align-items: center; gap: 12px; }
@@ -476,3 +482,63 @@ a.av-link:hover { color: var(--av-accent) !important; }
 .av-market { background: var(--av-surface); border: 1px solid var(--av-border); border-radius: 2px; padding: 24px 28px; }
 .av-market__title { font-family: var(--av-font-serif); font-size: 18px; color: var(--av-ink); margin: 0 0 10px; }
 .av-market__list { font-family: var(--av-font-sans); font-size: 15px; line-height: 1.9; color: var(--av-body); margin: 0; padding-left: 18px; }
+
+/* ---------------------------------------------------------------------------
+   13. Estados de interacción y utilidades PHP
+   Antes los aplicaba el runtime DC vía el atributo style-hover. Al pasar a
+   PHP se escriben como CSS real: las transiciones ya estaban declaradas
+   arriba, aquí solo se define el estado de destino.
+   --------------------------------------------------------------------------- */
+
+/* Enlace activo de la navegación (antes era un style inline del componente) */
+.av-link--active { color: var(--av-accent); font-weight: 700; }
+
+/* Logos de asociados (portada) */
+.av-partner:hover,
+.av-partner--text:hover { transform: scale(1.15); }
+
+/* Tarjetas del directorio */
+.av-socio:hover { box-shadow: 0 20px 40px -24px oklch(30% 0.05 60 / 0.4); transform: translateY(-3px); }
+
+/* Numeral de los objetivos */
+.av-obj-num:hover { transform: scale(1.55) translateX(6px); color: oklch(50% 0.16 60); }
+
+/* Botón de envío del formulario de contacto */
+.av-btn--submit:hover { background: oklch(56% 0.15 55); }
+
+/* Enlace "Conoce más" sobre banda oscura */
+.av-more--on-dark { color: oklch(80% 0.1 60); }
+
+/* Celda de objetivos en la portada (antes con estilos inline) */
+.av-obj-cell { background: oklch(97% 0.012 75); padding: 28px 26px; }
+
+/* Aparición progresiva al hacer scroll */
+.av-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.5s ease, transform 0.5s ease; transition-delay: var(--av-reveal-delay, 0ms); }
+.av-reveal--on { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .av-reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* Campo trampa del formulario: fuera de la vista, nunca enfocable */
+.av-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Mensajes de validación y avisos */
+.av-field__error { display: block; margin-top: 6px; font-family: var(--av-font-sans); font-size: 13px; color: oklch(50% 0.16 30); }
+.av-notice--error { background: oklch(96% 0.04 30); border-color: oklch(80% 0.09 30); color: oklch(42% 0.14 30); margin-bottom: 24px; }
+.av-notice--ok { background: oklch(96% 0.04 145); border-color: oklch(78% 0.09 145); color: oklch(38% 0.11 145); margin-bottom: 24px; }
+
+/* Bandeja de mensajes de contacto (panel) */
+.av-msg { background: var(--av-surface); border: 1px solid var(--av-border); border-left: 3px solid var(--av-border); border-radius: 2px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+.av-msg--nuevo { border-left-color: var(--av-accent); }
+.av-msg__head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.av-msg__from { font-family: var(--av-font-sans); font-weight: 600; font-size: 15px; color: var(--av-ink); }
+.av-msg__org { font-family: var(--av-font-sans); font-size: 14px; color: oklch(50% 0.02 60); }
+.av-msg__date { font-family: var(--av-font-sans); font-size: 12.5px; color: oklch(50% 0.02 60); white-space: nowrap; }
+.av-msg__warn { color: oklch(55% 0.14 55); }
+.av-msg__mail { font-family: var(--av-font-sans); font-size: 13.5px; color: var(--av-accent-link); }
+.av-msg__body { font-family: var(--av-font-sans); font-size: 14.5px; line-height: 1.7; color: var(--av-body); margin: 0; white-space: normal; }
+
+/* Rejilla de objetivos: una columna en pantallas angostas */
+@media (max-width: 860px) {
+  .av-objgrid { grid-template-columns: 1fr; }
+}
