@@ -126,7 +126,12 @@ a:hover { color: var(--av-link-hover); }
 .av-eyebrow--on-dark {
   letter-spacing: 0.14em;
   font-weight: 600;
-  color: oklch(80% 0.09 60);
+  /* Más claro que el naranja de marca, y con algo más de croma para que siga
+     leyéndose como naranja y no como crema. El anterior (80% 0.09 60) daba
+     1,4:1 sobre el cielo de la portada: prácticamente invisible. */
+  color: oklch(90% 0.10 75);
+  /* Red de seguridad por si algún día se cambia la foto del hero. */
+  text-shadow: 0 1px 2px oklch(15% 0.02 100 / 0.45);
 }
 
 /* Títulos (serif) */
@@ -336,9 +341,22 @@ a.av-link:hover { color: var(--av-accent) !important; }
 .av-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .av-hero__img--low { object-position: center 30%; }
 .av-hero__overlay { position: absolute; inset: 0; }
-.av-hero__overlay--gradient { background: linear-gradient(90deg, oklch(22% 0.03 100 / 0.72) 0%, oklch(22% 0.03 100 / 0.32) 55%, oklch(22% 0.03 100 / 0.08) 100%); }
-.av-hero__overlay--55 { background: oklch(20% 0.03 100 / 0.55); }
-.av-hero__overlay--50 { background: oklch(20% 0.03 100 / 0.5); }
+/* Dos capas. La horizontal es la de siempre, la del degradado editorial de
+   izquierda a derecha, pero con más cuerpo. La vertical de arriba es la que
+   faltaba: el antetítulo va en lo más alto del hero, justo sobre el cielo,
+   que es la zona más clara de la foto; sin ella ni el texto blanco llegaba
+   al mínimo de contraste. */
+.av-hero__overlay--gradient {
+  background:
+    linear-gradient(180deg, oklch(16% 0.03 100 / 0.60) 0%, oklch(16% 0.03 100 / 0) 48%),
+    linear-gradient(90deg,
+      oklch(18% 0.03 100 / 0.90) 0%,
+      oklch(18% 0.03 100 / 0.74) 42%,
+      oklch(18% 0.03 100 / 0.45) 70%,
+      oklch(18% 0.03 100 / 0.18) 100%);
+}
+.av-hero__overlay--55 { background: oklch(18% 0.03 100 / 0.62); }
+.av-hero__overlay--50 { background: oklch(18% 0.03 100 / 0.58); }
 .av-hero__inner {
   position: relative; margin: 0 auto; flex: 1;
   /* Como hijo flex hace falta width:100%, y con relleno eso obliga a
@@ -647,6 +665,18 @@ a.av-link:hover { color: var(--av-accent) !important; }
      sobre un ancho de teléfono recortaba media imagen. Con aspect-ratio se
      ve completa y encoge en proporción. */
   .av-figure--340, .av-figure--320 { height: auto; aspect-ratio: 16 / 10; }
+
+  /* El degradado horizontal supone que el texto vive en la mitad izquierda.
+     En móvil ocupa todo el ancho, así que su final caía sobre la parte casi
+     descubierta. Aquí se cambia por un velo parejo. */
+  .av-hero__overlay--gradient {
+    background: linear-gradient(180deg,
+      oklch(16% 0.03 100 / 0.72) 0%,
+      oklch(16% 0.03 100 / 0.62) 55%,
+      oklch(16% 0.03 100 / 0.72) 100%);
+  }
+  .av-hero__overlay--55 { background: oklch(18% 0.03 100 / 0.66); }
+  .av-hero__overlay--50 { background: oklch(18% 0.03 100 / 0.64); }
 
   /* Contacto: la columna oscura pasa arriba del formulario. */
   .av-contact { grid-template-columns: 1fr; }
