@@ -8,27 +8,27 @@ require __DIR__ . '/inc/bootstrap.php';
 $socios = [
     [
         'name'  => 'Empresas Gorbea',
-        'logo'  => 'assets/socio-eg.webp',
+        'logo'  => 'assets/logo-gorbea.webp',
         'desc'  => 'Empresa procesadora con presencia histórica en la industria alimentaria del sur de Chile.',
     ],
     [
         'name'  => 'Itata',
-        'logo'  => 'assets/socio-itata.webp',
+        'logo'  => 'assets/logo-Itata.webp',
         'desc'  => 'Procesadora vinculada a la producción agrícola de la cuenca del Itata.',
     ],
     [
         'name'  => 'AEG Nutrición',
-        'logo'  => 'assets/socio-aeg.webp',
+        'logo'  => 'assets/logo-aeg.webp',
         'desc'  => 'Especialista en nutrición e ingredientes a base de avena y otros cereales.',
     ],
     [
         'name'  => 'Agrotop',
-        'logo'  => 'assets/socio-agrotop.webp',
+        'logo'  => 'assets/logo-agrotop.webp',
         'desc'  => 'Empresa agroindustrial enfocada en el desarrollo de proveedores y productores locales.',
     ],
     [
         'name'  => 'Carozzi',
-        'logo'  => null,
+        'logo'  => 'assets/logo-carozzi.webp',
         'desc'  => 'Una de las principales empresas de alimentos de Chile, con línea de productos elaborados en base a avena.',
     ],
 ];

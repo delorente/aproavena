@@ -20,11 +20,14 @@ $objetivos = [
 ];
 
 // Sin altura por logo: el tamaño lo normaliza .av-partner__img en el CSS.
+// Cuidado con logo-Itata.webp: la I va en mayúscula. Windows no distingue
+// mayúsculas pero Linux sí, así que en el VPS el nombre debe coincidir exacto.
 $socios = [
-    ['assets/socio-eg.webp',      'Empresas Gorbea'],
-    ['assets/socio-itata.webp',   'Itata'],
-    ['assets/socio-aeg.webp',     'AEG Nutrición'],
-    ['assets/socio-agrotop.webp', 'Agrotop'],
+    ['assets/logo-gorbea.webp',  'Empresas Gorbea'],
+    ['assets/logo-Itata.webp',   'Itata'],
+    ['assets/logo-aeg.webp',     'AEG Nutrición'],
+    ['assets/logo-agrotop.webp', 'Agrotop'],
+    ['assets/logo-carozzi.webp', 'Carozzi'],
 ];
 
 $pageTitle = 'Aproavena — Asociación de Procesadores de Avena de Chile A.G.';
@@ -91,7 +94,6 @@ require __DIR__ . '/inc/header.php';
     <?php foreach ($socios as [$logo, $nombre]): ?>
       <span class="av-partner"><img src="<?= e(url($logo)) ?>" alt="<?= e($nombre) ?>" class="av-partner__img" loading="lazy"></span>
     <?php endforeach; ?>
-    <span class="av-partner av-partner--text">Carozzi</span>
   </div>
   <div class="av-center av-mt-22">
     <a href="<?= e(url('directorio.php')) ?>" class="av-more av-more--sm">Ver directorio completo de socios →</a>
