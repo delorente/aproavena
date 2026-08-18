@@ -3,6 +3,17 @@
 # --- Página por defecto ------------------------------------------------------
 DirectoryIndex index.php index.html
 
+# --- Forzar HTTPS ------------------------------------------------------------
+# Sin esto, entrar por http:// deja pasar el login del panel en texto plano
+# y la cookie de sesion no se marca como secure.
+# La segunda condicion cubre el caso de estar detras de un proxy inverso.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
+
 # --- No listar directorios ---------------------------------------------------
 Options -Indexes
 
@@ -25,8 +36,11 @@ Options -Indexes
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  # Descomenta cuando el sitio ya esté con HTTPS y certificado válido:
-  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  # HSTS: el navegador usa HTTPS aunque el usuario escriba http://.
+  # Sin includeSubDomains a proposito: exigirlo romperia cualquier
+  # subdominio que no tenga certificado propio.
+  # Los navegadores lo ignoran cuando llega por HTTP, asi que es inocuo ahi.
+  Header always set Strict-Transport-Security "max-age=31536000"
 </IfModule>
 
 # --- Caché de estáticos ------------------------------------------------------
