@@ -81,15 +81,14 @@ El resto del proyecto puede quedar en solo lectura para el servidor web.
 
 ---
 
-## 3b. Límites de subida en php.ini
+## 3b. Límites de subida (confirmado: el VPS viene en 2M)
 
-**Revisa esto o el cliente no podrá subir fotos.** Por defecto PHP trae
-`upload_max_filesize = 2M`, muy por debajo de lo que permite el código
-(8 MB para imágenes, 20 MB para PDF). Una foto de teléfono o de cámara pasa
-de 2 MB sin esfuerzo, y el panel respondería «El archivo supera el tamaño
-máximo permitido por el servidor».
+**Sin esto el cliente no puede subir fotos.** PHP trae `upload_max_filesize`
+en 2M, muy por debajo de los 8 MB que acepta el código para imágenes. Una foto
+de teléfono pasa de 2 MB sin esfuerzo y el panel respondería «El archivo supera
+el tamaño máximo permitido por el servidor».
 
-En el `php.ini` del VPS:
+El proyecto ya incluye un `.user.ini` en la raíz con los valores correctos:
 
 ```ini
 upload_max_filesize = 20M
@@ -97,14 +96,38 @@ post_max_size       = 24M   ; siempre mayor que upload_max_filesize
 max_file_uploads    = 20
 ```
 
-Reinicia Apache después. Para comprobar el valor efectivo:
+Eso basta si PHP corre como **FPM, CGI o FastCGI**, lo habitual en servidores
+con estructura `/home/dominio/public_html`. Tarda hasta 5 minutos en aplicarse
+(`user_ini.cache_ttl`). Con **mod_php** el `.user.ini` se ignora: ahí hay que
+editar `/etc/php.ini` y reiniciar Apache.
+
+Para saber cuál es tu caso:
 
 ```bash
-php -r 'echo ini_get("upload_max_filesize"), " / ", ini_get("post_max_size"), "\n";'
+ps aux | grep php-fpm | grep -v grep | head -3   # si sale algo, es FPM
+php --ini | head -3                              # php.ini de la consola
 ```
 
-En tu WAMP local ahora mismo está en `2M / 8M`.
+**Cuidado con cómo lo compruebas.** Este comando lee el `php.ini` de la CLI,
+que no tiene por qué coincidir con el del servidor web:
 
+```bash
+php -r 'echo ini_get("upload_max_filesize");'    # NO es el valor que importa
+```
+
+El valor real es el del web. Para verlo, un archivo temporal en `public_html`:
+
+```bash
+echo '<?php phpinfo();' > /home/aproavena.cl/public_html/_ini.php
+# ábrelo en el navegador, busca upload_max_filesize, y bórralo enseguida:
+rm /home/aproavena.cl/public_html/_ini.php
+```
+
+Bórralo apenas termines: `phpinfo()` expone rutas, módulos y configuración del
+servidor.
+
+La prueba definitiva es funcional: sube una foto de 4-5 MB a una noticia desde
+el panel. Si guarda, está resuelto.
 ---
 
 ## 4. Usuario del panel
