@@ -23,11 +23,11 @@ $objetivos = [
 // Cuidado con logo-Itata.webp: la I va en mayúscula. Windows no distingue
 // mayúsculas pero Linux sí, así que en el VPS el nombre debe coincidir exacto.
 $socios = [
-    ['assets/logo-gorbea.webp',  'Empresas Gorbea'],
-    ['assets/logo-Itata.webp',   'Itata'],
-    ['assets/logo-aeg.webp',     'AEG Nutrición'],
-    ['assets/logo-agrotop.webp', 'Agrotop'],
-    ['assets/logo-carozzi.webp', 'Carozzi'],
+    ['assets/logo-gorbea.png',  'Empresas Gorbea'],
+    ['assets/logo-Itata.png',   'Itata'],
+    ['assets/logo-aeg.png',     'AEG Nutrición'],
+    ['assets/logo-agrotop.png', 'Agrotop'],
+    ['assets/logo-carozzi.png', 'Carozzi'],
 ];
 
 $pageTitle = 'Aproavena — Asociación de Procesadores de Avena de Chile A.G.';
