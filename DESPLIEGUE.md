@@ -128,6 +128,7 @@ servidor.
 
 La prueba definitiva es funcional: sube una foto de 4-5 MB a una noticia desde
 el panel. Si guarda, está resuelto.
+
 ---
 
 ## 4. Usuario del panel
