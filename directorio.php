@@ -7,27 +7,27 @@ require __DIR__ . '/inc/bootstrap.php';
 // Sin altura por logo: el tamaño lo normaliza .av-socio__img en el CSS.
 $socios = [
     [
-        'name'  => 'Empresas Gorbea',
+        'name'  => 'Molinera Gorbea',
         'logo'  => 'assets/logo-gorbea.png',
         'desc'  => 'Empresa procesadora con presencia histórica en la industria alimentaria del sur de Chile.',
     ],
     [
-        'name'  => 'Itata',
+        'name'  => 'Molinera Itata S.A.',
         'logo'  => 'assets/logo-Itata.png',
         'desc'  => 'Procesadora vinculada a la producción agrícola de la cuenca del Itata.',
     ],
     [
-        'name'  => 'AEG Nutrición',
+        'name'  => 'Alimentos El Globo S.A.',
         'logo'  => 'assets/logo-aeg.png',
         'desc'  => 'Especialista en nutrición e ingredientes a base de avena y otros cereales.',
     ],
     [
-        'name'  => 'Agrotop',
+        'name'  => 'Avenatop Spa',
         'logo'  => 'assets/logo-agrotop.png',
         'desc'  => 'Empresa agroindustrial enfocada en el desarrollo de proveedores y productores locales.',
     ],
     [
-        'name'  => 'Carozzi',
+        'name'  => 'Empresas Carozzi',
         'logo'  => 'assets/logo-carozzi.png',
         'desc'  => 'Una de las principales empresas de alimentos de Chile, con línea de productos elaborados en base a avena.',
     ],
