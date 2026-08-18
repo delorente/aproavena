@@ -1,91 +1,165 @@
-body { 
-  font-family: Arial, sans-serif; 
-  margin: 20px; 
+/* ==========================================================================
+   Aproavena — Gráficos de la industria
+   --------------------------------------------------------------------------
+   Todo va anidado bajo .avena-dashboard-wrap a propósito. Las clases de esta
+   hoja son genéricas (.card, .grid, .controls, .hidden, .muted) y sin ese
+   contenedor pisarían al resto del sitio, que ahora comparte cabecera y pie
+   con estas páginas.
+
+   Los colores y tipografías salen de los tokens de styles.css para que los
+   gráficos no se vean como una pieza pegada de otro sitio.
+   ========================================================================== */
+
+.avena-dashboard-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px 90px;
+  font-family: var(--av-font-sans);
+  color: var(--av-body);
 }
 
-h1 { 
-  font-size: 22px; 
+.avena-dashboard-wrap .dash-title {
+  font-family: var(--av-font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--av-ink);
+  margin: 0 0 18px;
 }
 
-.controls { 
-  margin-bottom: 20px; 
+.avena-dashboard-wrap .js-title {
+  font-family: var(--av-font-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--av-ink-2);
+  margin: 0 0 14px;
 }
 
-.grid {
+.avena-dashboard-wrap .dashboard,
+.avena-dashboard-wrap .single-chart {
+  margin-bottom: 42px;
+}
+
+.avena-dashboard-wrap .chart-block {
+  margin-bottom: 32px;
+}
+
+.avena-dashboard-wrap hr {
+  border: 0;
+  border-top: 1px solid var(--av-border);
+  margin: 35px 0;
+}
+
+.avena-dashboard-wrap .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: 27px;
 }
 
-.card {
-  border: 1px solid #ddd;
-  padding: 10px;
+.avena-dashboard-wrap .card {
+  background: var(--av-surface);
+  border: 1px solid var(--av-border);
+  border-radius: 10px;
+  padding: 18px;
   margin-bottom: 20px;
 }
 
-#bar_chart, #geo_chart {
-  width: 100%;
-  height: 500px;
+.avena-dashboard-wrap .controls {
+  margin-bottom: 20px;
 }
 
-select { 
-  padding: 6px; 
+.avena-dashboard-wrap .label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--av-ink-2);
 }
 
-.year-controls {
+.avena-dashboard-wrap select {
+  padding: 6px 8px;
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--av-body);
+}
+
+.avena-dashboard-wrap .js-codeSelect {
+  width: 320px;
+  max-width: 100%;
+}
+
+/* --- Botonera de años ----------------------------------------------------- */
+.avena-dashboard-wrap .year-controls {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
 }
 
-.year-buttons {
+.avena-dashboard-wrap .year-buttons {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 }
 
-.year-btn {
+.avena-dashboard-wrap .year-btn,
+.avena-dashboard-wrap .toggle-btn,
+.avena-dashboard-wrap .compare-actions button {
   padding: 6px 12px;
-  border: 1px solid #bbb;
-  background: #fff;
-  cursor: pointer;
+  border: 1px solid var(--av-border);
   border-radius: 6px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--av-body);
+  cursor: pointer;
+}
+
+.avena-dashboard-wrap .year-btn:hover,
+.avena-dashboard-wrap .toggle-btn:hover,
+.avena-dashboard-wrap .compare-actions button:hover {
+  background: var(--av-band);
+}
+
+.avena-dashboard-wrap .year-btn.active {
+  background: var(--av-accent);
+  border-color: var(--av-accent);
+  color: #fff;
+}
+
+.avena-dashboard-wrap .toggle-btn {
+  margin-bottom: 10px;
+}
+
+/* --- Selector de países --------------------------------------------------- */
+.avena-dashboard-wrap .country-compare-panel {
+  margin-bottom: 20px;
+}
+
+.avena-dashboard-wrap .country-compare {
+  margin-bottom: 10px;
+}
+
+.avena-dashboard-wrap .js-countrySearch {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--av-border);
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: inherit;
   font-size: 14px;
 }
 
-.year-btn:hover {
-  background: #f3f3f3;
-}
-
-.year-btn.active {
-  background: #1f4aa8;
-  color: #fff;
-  border-color: #1f4aa8;
-}
-
-.country-compare { 
-  margin-bottom: 10px; 
-}
-
-#countrySearch {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-.country-list {
+.avena-dashboard-wrap .country-list {
   margin-top: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--av-border);
   border-radius: 6px;
   max-height: 180px;
   overflow-y: auto;
   padding: 8px;
 }
 
-.country-item {
+.avena-dashboard-wrap .country-item {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -93,70 +167,34 @@ select {
   font-size: 14px;
 }
 
-.compare-actions {
+.avena-dashboard-wrap .compare-actions {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
-.compare-actions button {
-  padding: 6px 10px;
-  border: 1px solid #bbb;
-  background: #fff;
-  cursor: pointer;
-  border-radius: 6px;
+.avena-dashboard-wrap .muted {
+  color: var(--av-body);
+  font-size: 13px;
 }
 
-.compare-actions button:hover { 
-  background: #f3f3f3; 
-}
-
-.muted { 
-  color: #666; 
-  font-size: 13px; 
-}
-
-.toggle-btn {
-  padding: 6px 10px;
-  border: 1px solid #bbb;
-  background: #fff;
-  cursor: pointer;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-
-.toggle-btn:hover { 
-  background: #f3f3f3; 
-}
-
-.country-compare-panel {
-  margin-bottom: 20px;
-}
-
-.hidden {
+.avena-dashboard-wrap .hidden {
   display: none;
 }
 
-.js-codeSelect {
-  width: 320px;
+/* --- Gráficos ------------------------------------------------------------- */
+/* Google Charts dibuja a un ancho fijo calculado al inicio: sin esto, en móvil
+   el SVG desborda y provoca scroll horizontal en toda la página. */
+.avena-dashboard-wrap .js-chart {
   max-width: 100%;
+  overflow-x: auto;
 }
 
-
-.avena-dashboard-wrap .chart-block {
-  margin-bottom: 32px !important;
-}
-
-.avena-dashboard-wrap .dashboard,
-.avena-dashboard-wrap .single-chart {
-  margin-bottom: 42px !important;
-}
-
-.avena-dashboard-wrap hr {
-  margin: 35px 0 !important;
-}
-
-.avena-dashboard-wrap .grid {
-  gap: 27px !important;
+@media (max-width: 640px) {
+  .avena-dashboard-wrap {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }

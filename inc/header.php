@@ -3,12 +3,14 @@ declare(strict_types=1);
 /**
  * Cabecera común + navegación. Antes de incluirla, define:
  *   $pageTitle  string  título del <title>
- *   $activeNav  string  inicio|quienes|avena|directorio|noticias|contacto
+ *   $activeNav  string  inicio|quienes|avena|directorio|noticias|graficos|contacto
  *   $pageDesc   string  (opcional) meta description
+ *   $pageHead   string  (opcional) etiquetas extra para el <head> de esa página
  */
 $pageTitle = $pageTitle ?? 'Aproavena';
 $activeNav = $activeNav ?? '';
 $pageDesc  = $pageDesc  ?? 'Asociación de Procesadores de Avena de Chile A.G. Representamos a la industria procesadora de avena del país.';
+$pageHead  = $pageHead  ?? '';
 
 $navLinks = [
     ['inicio',     'Inicio',              ''],
@@ -16,8 +18,8 @@ $navLinks = [
     ['avena',      'La Avena',            'la-avena.php'],
     ['directorio', 'Directorio y socios', 'directorio.php'],
     ['noticias',   'Noticias',            'noticias.php'],
+    ['graficos',   'Gráficos',            'avena-dashboard.php'],
     ['contacto',   'Contacto',            'contacto.php'],
-    ['Grafico',   'Gráficos',            'avena-dashboard.php'],
 ];
 ?>
 <!DOCTYPE html>
@@ -35,6 +37,8 @@ $navLinks = [
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= e(url('assets/styles.css')) ?>">
+<?php /* Ya viene escapado por quien lo define: son etiquetas, no texto. */ ?>
+<?= $pageHead ?>
 </head>
 <body>
 

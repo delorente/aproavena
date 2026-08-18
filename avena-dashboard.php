@@ -1,111 +1,55 @@
 <?php
+declare(strict_types=1);
 
-ini_set('display_errors', '0');
-ini_set('display_startup_errors', '0');
-error_reporting(E_ALL);
-
-function esc_attr($value): string {
-    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
-}
-
-function avena_data_url(string $fname): string {
-    return 'avena-dashboard.php?avena_xlsx=1&f=' . rawurlencode($fname);
-}
-
-$pathInfo = $_SERVER['PATH_INFO'] ?? '';
-$isDataRequest = isset($_GET['avena_xlsx']) || ($pathInfo === '/xlsx');
-
-if ($isDataRequest) {
-    $f = isset($_GET['f']) ? basename((string)$_GET['f']) : '';
-
-    if ($f === '') {
-        http_response_code(400);
-        header('Content-Type: text/plain; charset=utf-8');
-        echo 'Falta parametro f';
-        exit;
-    }
-
-    $allowed = [
-        'produccion.xlsx',
-        'rendimiento.xlsx',
-        'superficie.xlsx',
-        'precios_a_productor_USA.xlsx',
-        'precios_a_productor_CA.xlsx',
-        'consumo_34.xlsx',
-        'polinomio_costos.xlsx',
-        'eeuu_stocks.xlsx',
-        'exportaciones_resumidas.json',
-        'importaciones_resumidas.json',
-    ];
-
-    if (!in_array($f, $allowed, true)) {
-        http_response_code(403);
-        header('Content-Type: text/plain; charset=utf-8');
-        echo 'Archivo no permitido';
-        exit;
-    }
-
-    $path = __DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . $f;
-
-    if (!is_file($path)) {
-        http_response_code(404);
-        header('Content-Type: text/plain; charset=utf-8');
-        echo 'Archivo no encontrado: ' . esc_attr($f);
-        exit;
-    }
-
-    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-
-    if ($ext === 'xlsx') {
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    } elseif ($ext === 'json') {
-        header('Content-Type: application/json; charset=utf-8');
-    } else {
-        header('Content-Type: application/octet-stream');
-    }
-
-    header('Content-Length: ' . filesize($path));
-    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-    header('Pragma: no-cache');
-    header('X-Content-Type-Options: nosniff');
-    header('Content-Disposition: inline; filename="' . basename($f) . '"');
-
-    readfile($path);
+// --- Entrega de los archivos de datos ---------------------------------------
+// Se resuelve antes que nada: no necesita sesión ni base de datos, y así las
+// diez descargas que el navegador lanza en paralelo no compiten por el bloqueo
+// del archivo de sesión.
+if (isset($_GET['avena_xlsx']) || ($_SERVER['PATH_INFO'] ?? '') === '/xlsx') {
+    require __DIR__ . '/inc/datos-dashboard.php';
     exit;
 }
 
-$u = function ($fname) {
-    return avena_data_url($fname);
-};
+require __DIR__ . '/inc/bootstrap.php';
+
+/** URL ya escapada del archivo de datos, para meterla en un atributo. */
+function dato(string $archivo): string
+{
+    return e(url('avena-dashboard.php?avena_xlsx=1&f=' . rawurlencode($archivo)));
+}
+
+$pageTitle = 'Gráficos de la industria — Aproavena';
+$activeNav = 'graficos';
+$pageDesc  = 'Producción, rendimiento, superficie, precios, consumo y comercio exterior de la avena, con datos internacionales comparables.';
+
+// Los gráficos los dibuja Google Charts y las planillas las lee SheetJS.
+// Van aquí y no en el header común porque ninguna otra página los necesita.
+$pageHead = <<<'HTML'
+<link rel="stylesheet" href="__CSS__">
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="__JS__" defer></script>
+HTML;
+
+$pageHead = str_replace(
+    ['__CSS__', '__JS__'],
+    [e(url('assets/produccion_css.css')), e(url('assets/dashboards.js'))],
+    $pageHead
+);
+
+require __DIR__ . '/inc/header.php';
 ?>
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Avena Dashboard</title>
 
-  <link rel="stylesheet" href="assets/styles.css">
-  <link rel="stylesheet" href="assets/produccion_css.css">
-
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-  <script>
-    window.AVENA_DASH = {
-      apiBase: "avena-dashboard.php",
-      nonce: ""
-    };
-  </script>
-
-  <script src="assets/dashboards.js" defer></script>
-</head>
-<body>
+<section class="av-container av-pt-64 av-pb-24">
+  <div class="av-eyebrow av-eyebrow--wide">Datos de la industria</div>
+  <h1 class="av-heading av-fs-34 av-mb-16">Gráficos de producción, precios y comercio de la avena</h1>
+  <p class="av-text av-mw-68ch">Series internacionales de producción, rendimiento, superficie, precios a productor, consumo, costos de exportación y stocks. Elige el año y los países que quieras comparar en cada gráfico.</p>
+</section>
 
   <div class="avena-dashboard-wrap">
 
     <section class="dashboard"
-      data-xlsx="<?php echo esc_attr($u('produccion.xlsx')); ?>"
+      data-xlsx="<?= dato('produccion.xlsx') ?>"
       data-bar-title="Ranking de países según producción (Ton)"
       data-geo-title="Producción por Países (Ton)"
       data-y-label="Producción (Ton)"
@@ -167,7 +111,7 @@ $u = function ($fname) {
 
 
       <section class="dashboard"
-      data-xlsx="<?php echo esc_attr($u('rendimiento.xlsx')); ?>"
+      data-xlsx="<?= dato('rendimiento.xlsx') ?>"
       data-bar-title="Ranking de países según rendimiento (ton/ha)"
       data-geo-title="Rendimiento por Países (ton/ha)"
       data-y-label="Rendimiento"
@@ -228,7 +172,7 @@ $u = function ($fname) {
   <hr>
 
   <section class="dashboard"
-      data-xlsx="<?php echo esc_attr($u('superficie.xlsx')); ?>"
+      data-xlsx="<?= dato('superficie.xlsx') ?>"
       data-bar-title="Ranking de países según superficie (ha)"
       data-geo-title="Superficie por Países (ha)"
       data-y-label="Superficie"
@@ -289,7 +233,7 @@ $u = function ($fname) {
 
   <section class="single-chart"
     data-kind="line_marketing"
-    data-xlsx="<?php echo esc_attr($u('precios_a_productor_USA.xlsx')); ?>"
+    data-xlsx="<?= dato('precios_a_productor_USA.xlsx') ?>"
     data-title="Prices al productor USA"
     data-year-col="Marketing"
     data-y-col="Annual"
@@ -314,7 +258,7 @@ $u = function ($fname) {
 
   <section class="single-chart"
     data-kind="line"
-    data-xlsx="<?php echo esc_attr($u('precios_a_productor_CA.xlsx')); ?>"
+    data-xlsx="<?= dato('precios_a_productor_CA.xlsx') ?>"
     data-title="Precios al productor Canadá"
     data-x-col="Reference Date"
     data-y-col="VALUE"
@@ -333,7 +277,7 @@ $u = function ($fname) {
 
   <section class="single-chart"
     data-kind="bar_simple"
-    data-xlsx="<?php echo esc_attr($u('consumo_34.xlsx')); ?>"
+    data-xlsx="<?= dato('consumo_34.xlsx') ?>"
     data-title="Consumo doméstico (Ranking países)"
     data-country-col="Country"
     data-value-col="Value"
@@ -365,7 +309,7 @@ $u = function ($fname) {
 
   <section class="single-chart"
     data-kind="stack_costs"
-    data-xlsx="<?php echo esc_attr($u('polinomio_costos.xlsx')); ?>"
+    data-xlsx="<?= dato('polinomio_costos.xlsx') ?>"
     data-title="Polinomio de Costos (USD/ton)"
   >
     <h2 class="dash-title">Polinomio de Costos</h2>
@@ -404,8 +348,8 @@ $u = function ($fname) {
 
   <section class="single-chart"
     data-kind="trade_json_toggle"
-    data-export-json="<?php echo esc_attr($u('exportaciones_resumidas.json')); ?>"
-    data-import-json="<?php echo esc_attr($u('importaciones_resumidas.json')); ?>"
+    data-export-json="<?= dato('exportaciones_resumidas.json') ?>"
+    data-import-json="<?= dato('importaciones_resumidas.json') ?>"
     data-title="Comercio exterior"
     data-min-year="2000"
     data-top-n="10"
@@ -452,7 +396,7 @@ $u = function ($fname) {
 
   <section class="single-chart"
     data-kind="us_stocks_sankey"
-    data-xlsx="<?php echo esc_attr($u('eeuu_stocks.xlsx')); ?>"
+    data-xlsx="<?= dato('eeuu_stocks.xlsx') ?>"
     data-title="EEUU Stocks (millones de toneladas)"
     data-default-quarter="MY June-May"
   >
@@ -478,5 +422,4 @@ $u = function ($fname) {
 
   </div>
 
-</body>
-</html>
+<?php require __DIR__ . '/inc/footer.php'; ?>

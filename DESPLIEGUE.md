@@ -186,9 +186,49 @@ Con el certificado ya emitido, descomenta la línea de
 - [ ] `https://aproavena.cl/inc/config.php` devuelve **403**, no el archivo
 - [ ] `https://aproavena.cl/inc/.htaccess` devuelve **403**
 - [ ] `https://aproavena.cl/sql/schema.sql` devuelve **403**
+- [ ] `/avena-dashboard.php` carga con la cabecera y el pie del sitio, y los
+      gráficos se dibujan
+- [ ] `https://aproavena.cl/data/produccion.xlsx` devuelve **403**: los datos
+      solo salen por el endpoint, nunca de la carpeta
 
 Los dos últimos son los que importan: si `AllowOverride` no está en `All`,
 los `.htaccess` se ignoran y las credenciales quedan expuestas.
+
+---
+
+## 7. Los datos de los gráficos
+
+`avena-dashboard.php` lee planillas y JSON de `data/`. Esa carpeta está cerrada
+por su propio `.htaccess`: los archivos solo salen por el endpoint del propio
+PHP, que valida el nombre contra una lista blanca. Para agregar o cambiar una
+serie:
+
+1. Deja el archivo en `data/` con el nombre exacto que ya usa la página.
+2. Si es un archivo nuevo, añádelo a `DASHBOARD_DATOS` en
+   `inc/datos-dashboard.php`. Si no está en esa lista, no se sirve.
+
+El navegador cachea cada archivo una hora, y después revalida con `ETag`. Al
+reemplazar un archivo cambia su fecha, cambia el `ETag` y el navegador se
+entera enseguida: **no hace falta esperar a que expire nada**.
+
+### Comercio exterior
+
+Los volcados de exportaciones e importaciones llegan como una lista de objetos
+con un campo `Description` (el texto largo de la partida arancelaria) que los
+gráficos no usan. Repetido en decenas de miles de filas, ese campo era el 81%
+del archivo. Antes de subirlos hay que compactarlos:
+
+```bash
+php tools/comprimir-comercio.php uploads/exportaciones_crudo.json data/exportaciones_resumidas.json
+php tools/comprimir-comercio.php uploads/importaciones_crudo.json data/importaciones_resumidas.json
+```
+
+Los volcados crudos van en `uploads/`, que está en `.gitignore`: al repositorio
+solo sube la versión compacta. El script se niega a procesar dos veces el mismo
+archivo, así que no hay forma de destruirlo por error.
+
+Entre esto y la compresión gzip que activa el `.htaccess` para
+`application/json`, abrir la página bajó de **11,7 MB a 0,8 MB**.
 
 ---
 
@@ -201,6 +241,9 @@ admin/         panel: login, noticias (CRUD), mensajes
 inc/           config, conexión, helpers, auth, subidas, plantillas
 assets/        CSS e imágenes del sitio
 media/noticias/  portadas y PDF subidos desde el panel
+avena-dashboard.php  gráficos de la industria
+data/          planillas y JSON que alimentan los gráficos (cerrada por .htaccess)
+tools/         scripts de consola para preparar datos
 sql/schema.sql  esquema + contenido inicial
 legacy/        versión anterior (runtime DC + Supabase), no se sirve
 ```

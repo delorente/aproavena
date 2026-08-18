@@ -33,7 +33,7 @@ function escapeHtml(s) {
 }
 
 async function fetchExcel(xlsxPath, sheetName = null) {
-  const res = await fetch(encodeURI(xlsxPath), { cache: "no-store" });
+  const res = await fetch(encodeURI(xlsxPath));
   if (!res.ok) throw new Error(`HTTP ${res.status} al cargar ${xlsxPath}`);
   const ab = await res.arrayBuffer();
   const wb = XLSX.read(ab, { type: "array" });
@@ -61,7 +61,7 @@ async function fetchExcelObjects(xlsxPath, requiredCols = []) {
 }
 
 async function fetchJSON(jsonPath) {
-  const res = await fetch(encodeURI(jsonPath), { cache: "no-store" });
+  const res = await fetch(encodeURI(jsonPath));
   if (!res.ok) throw new Error(`HTTP ${res.status} al cargar ${jsonPath}`);
   return await res.json();
 }
@@ -148,7 +148,7 @@ class CountryFilter {
     this.all.filter(c => c.toLowerCase().includes(term)).forEach(country => {
       const label = document.createElement("label");
       label.className = "country-item";
-      label.innerHTML = `<input type="checkbox" ${this.selected.has(country) ? "checked" : ""}> <span>${country}</span>`;
+      label.innerHTML = `<input type="checkbox" ${this.selected.has(country) ? "checked" : ""}> <span>${escapeHtml(country)}</span>`;
       
       label.querySelector("input").onchange = (e) => {
         this.showNone = false;
@@ -393,10 +393,23 @@ const chartHandlers = {
     const minYear = Number(sec.dataset.minYear || 2000);
     const topN = Number(sec.dataset.topN || 10);
 
-    const norm = (data) => data.map(o => ({
-      year: Number(o.Year), country: String(o["Reported Country"] || "").trim(),
-      code: String(o["Number Code"] || "").trim(), value: Number(o["Net Weight Sum"] || 0)
-    })).filter(o => Number.isFinite(o.year) && o.year >= minYear && o.country && o.code);
+    // Los JSON de comercio vienen en formato compacto {cols, rows}: una fila
+    // por registro, sin repetir los nombres de las claves ni el texto largo de
+    // la partida arancelaria, que aqui no se usa. Ver tools/comprimir-comercio.php.
+    // Se acepta tambien el formato antiguo (lista de objetos) por si queda algun
+    // volcado sin convertir.
+    const norm = (data) => {
+      const filas = Array.isArray(data)
+        ? data.map(o => [o.Year, o["Reported Country"], o["Number Code"], o["Net Weight Sum"]])
+        : (data && Array.isArray(data.rows) ? data.rows : []);
+
+      return filas.map(([year, country, code, value]) => ({
+        year: Number(year),
+        country: String(country ?? "").trim(),
+        code: String(code ?? "").trim(),
+        value: Number(value ?? 0)
+      })).filter(o => Number.isFinite(o.year) && o.year >= minYear && o.country && o.code);
+    };
 
     const expData = norm(rawExp);
     const impData = norm(rawImp);
@@ -550,7 +563,7 @@ const chartHandlers = {
 
       dt.addRows(flows.filter(r => r[2] > 0).map(([f, t, v]) => [f, t, v, `${f} → ${t}: ${fmt.format(v)} MM Ton`]));
 
-      chartDiv.innerHTML = `<div style="font-weight:600;margin-bottom:10px">${sec.dataset.title || ""} - ${yearSelect.value} - ${quarterSelect.value}</div><div class="sankey-inner" style="width:100%;height:480px"></div>`;
+      chartDiv.innerHTML = `<div style="font-weight:600;margin-bottom:10px">${escapeHtml(sec.dataset.title || "")} - ${escapeHtml(yearSelect.value)} - ${escapeHtml(quarterSelect.value)}</div><div class="sankey-inner" style="width:100%;height:480px"></div>`;
       new google.visualization.Sankey(chartDiv.querySelector(".sankey-inner")).draw(dt, {
         sankey: { node: { label: { fontSize: 13 } }, link: { colorMode: "source" } }
       });
@@ -572,9 +585,9 @@ async function initSingleChart(sec) {
       await handler(sec, chartDiv);
     } catch (e) {
       console.error(`[SingleChart Error - ${kind}]`, e);
-      chartDiv.innerHTML = `<div style="padding:10px;color:#b00">Error al cargar gráfico: ${e.message}</div>`;
+      chartDiv.innerHTML = `<div style="padding:10px;color:#b00">Error al cargar gráfico: ${escapeHtml(e.message)}</div>`;
     }
   } else {
-    chartDiv.innerHTML = `<div style="padding:10px;color:#b00">Tipo de gráfico no soportado: ${kind}</div>`;
+    chartDiv.innerHTML = `<div style="padding:10px;color:#b00">Tipo de gráfico no soportado: ${escapeHtml(kind)}</div>`;
   }
 }
