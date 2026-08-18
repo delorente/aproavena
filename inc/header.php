@@ -17,6 +17,7 @@ $navLinks = [
     ['directorio', 'Directorio y socios', 'directorio.php'],
     ['noticias',   'Noticias',            'noticias.php'],
     ['contacto',   'Contacto',            'contacto.php'],
+    ['Grafico',   'Gráficos',            'avena-dashboard.php'],
 ];
 ?>
 <!DOCTYPE html>
