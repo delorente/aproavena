@@ -354,7 +354,7 @@ a.av-link:hover { color: var(--av-accent) !important; }
 .av-socio__logo { background: #fff; display: flex; align-items: center; justify-content: center; padding: 30px; border-right: 1px solid var(--av-border-soft); }
 /* Misma idea que .av-partner__img, con la caja mayor del directorio.
    La columna mide 220px y el padding se come 60, quedan 160 útiles. */
-.av-socio__img { max-width: 150px; max-height: 64px; width: auto; height: auto; object-fit: contain; }
+.av-socio__img { max-width: 150px; max-height: 88px; width: auto; height: auto; object-fit: contain; }
 .av-socio__logo-text { font-family: var(--av-font-serif); font-size: 30px; font-weight: 600; color: oklch(35% 0.03 40); }
 .av-socio__body { padding: 30px 34px; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
 .av-socio__head { display: flex; align-items: center; gap: 12px; }
