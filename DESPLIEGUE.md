@@ -3,6 +3,16 @@
 Sitio en PHP + MySQL, sin dependencias externas ni proceso de compilación.
 Se copia, se configura y funciona.
 
+## El servidor de este proyecto
+
+| Dato | Valor |
+| --- | --- |
+| Ruta del sitio | `/home/aproavena.cl/public_html` |
+| Servidor | `vxsct3508`, familia RHEL/CentOS (Apache en `/etc/httpd`) |
+| base_path | Se deduce solo: el sitio va en la raíz del dominio |
+
+El sitio vive **directamente** en `public_html`, no en una subcarpeta.
+
 **Requisitos:** PHP 8.1 o superior (probado en 8.3) con `pdo_mysql`, `fileinfo`
 y `mbstring` · MySQL 5.7+ o MariaDB 10.3+ · Apache con `mod_rewrite` y
 `AllowOverride All` (para que se apliquen los `.htaccess`).
@@ -58,10 +68,14 @@ Solo una carpeta necesita escritura, la de los archivos que se suben desde el
 panel:
 
 ```bash
+cd /home/aproavena.cl/public_html
 mkdir -p media/noticias
-chown -R www-data:www-data media/noticias   # el usuario de Apache en tu VPS
+chown -R apache:apache media/noticias   # en RHEL/CentOS el usuario es apache, no www-data
 chmod 755 media/noticias
 ```
+
+Si `chown apache:apache` da error, mira con qué usuario corre el servidor:
+`ps aux | grep httpd | grep -v grep | head -2`
 
 El resto del proyecto puede quedar en solo lectura para el servidor web.
 
@@ -114,15 +128,15 @@ Con el sitio en la raíz de un VirtualHost:
 <VirtualHost *:80>
     ServerName aproavena.cl
     ServerAlias www.aproavena.cl
-    DocumentRoot /var/www/aproavena
+    DocumentRoot /home/aproavena.cl/public_html
 
-    <Directory /var/www/aproavena>
+    <Directory /home/aproavena.cl/public_html>
         AllowOverride All      # imprescindible: sin esto los .htaccess se ignoran
         Require all granted
     </Directory>
 
-    ErrorLog  ${APACHE_LOG_DIR}/aproavena-error.log
-    CustomLog ${APACHE_LOG_DIR}/aproavena-access.log combined
+    ErrorLog  /var/log/httpd/aproavena-error.log
+    CustomLog /var/log/httpd/aproavena-access.log combined
 </VirtualHost>
 ```
 
@@ -145,8 +159,9 @@ Con el certificado ya emitido, descomenta la línea de
 - [ ] `/admin/` redirige a `/admin/login.php`
 - [ ] Entras al panel, creas una noticia con portada y aparece en el sitio
 - [ ] El formulario de contacto guarda y el mensaje sale en `/admin/mensajes.php`
-- [ ] `https://tudominio.cl/inc/config.php` devuelve **403**, no el archivo
-- [ ] `https://tudominio.cl/sql/schema.sql` devuelve **403**
+- [ ] `https://aproavena.cl/inc/config.php` devuelve **403**, no el archivo
+- [ ] `https://aproavena.cl/inc/.htaccess` devuelve **403**
+- [ ] `https://aproavena.cl/sql/schema.sql` devuelve **403**
 
 Los dos últimos son los que importan: si `AllowOverride` no está en `All`,
 los `.htaccess` se ignoran y las credenciales quedan expuestas.
