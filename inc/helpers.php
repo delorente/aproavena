@@ -14,6 +14,21 @@ function url(string $path = ''): string
     return ($config['base_path'] ?? '') . '/' . ltrim($path, '/');
 }
 
+/**
+ * URL de un archivo estático con la fecha de modificación como versión.
+ *
+ * El .htaccess cachea el CSS siete días, así que tras un despliegue quien ya
+ * había visitado el sitio seguiría usando la hoja antigua con el HTML nuevo.
+ * Al cambiar el archivo cambia su fecha, cambia la URL y el navegador la pide
+ * de nuevo. Si el archivo no existe se devuelve la URL pelada, sin romper.
+ */
+function asset(string $path): string
+{
+    $abs = __DIR__ . '/../' . ltrim($path, '/');
+    $version = is_file($abs) ? filemtime($abs) : false;
+    return url($path) . ($version ? '?v=' . $version : '');
+}
+
 /** Redirige y corta la ejecución. */
 function redirect(string $path): void
 {

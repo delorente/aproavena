@@ -33,7 +33,7 @@ HTML;
 
 $pageHead = str_replace(
     ['__CSS__', '__JS__'],
-    [e(url('assets/produccion_css.css')), e(url('assets/dashboards.js'))],
+    [e(asset('assets/produccion_css.css')), e(asset('assets/dashboards.js'))],
     $pageHead
 );
 

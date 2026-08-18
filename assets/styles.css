@@ -51,6 +51,9 @@
   /* Sombra de imágenes destacadas */
   --av-shadow:        0 28px 50px -24px oklch(30% 0.05 60 / 0.4);
 
+  /* Relleno lateral de contenedores: fluido entre móvil y escritorio */
+  --av-gutter:        clamp(20px, 5vw, 32px);
+
   /* Tipografías */
   --av-font-serif:    'Source Serif 4', serif;
   --av-font-sans:     'Public Sans', sans-serif;
@@ -59,14 +62,20 @@
 /* ---------------------------------------------------------------------------
    2. Base / global
    --------------------------------------------------------------------------- */
+html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--av-bg); }
 a    { color: var(--av-link); }
+
+/* Ninguna imagen debe poder ser más ancha que su contenedor. */
+img, svg, video { max-width: 100%; }
 a:hover { color: var(--av-link-hover); }
 
 /* ---------------------------------------------------------------------------
    3. Layout
    --------------------------------------------------------------------------- */
-.av-container      { max-width: 1200px; margin: 0 auto; padding-left: 32px; padding-right: 32px; }
+/* El relleno lateral se encoge con la pantalla: 32px en escritorio, 20px en
+   un teléfono. Así el contenido no queda ahogado en un ancho de 390px. */
+.av-container      { max-width: 1200px; margin: 0 auto; padding-left: var(--av-gutter); padding-right: var(--av-gutter); }
 .av-container--900  { max-width: 900px; }
 .av-container--1000 { max-width: 1000px; }
 .av-container--780  { max-width: 780px; }
@@ -117,7 +126,12 @@ a:hover { color: var(--av-link-hover); }
 .av-eyebrow--on-dark {
   letter-spacing: 0.14em;
   font-weight: 600;
-  color: oklch(80% 0.09 60);
+  /* Más claro que el naranja de marca, y con algo más de croma para que siga
+     leyéndose como naranja y no como crema. El anterior (80% 0.09 60) daba
+     1,4:1 sobre el cielo de la portada: prácticamente invisible. */
+  color: oklch(90% 0.10 75);
+  /* Red de seguridad por si algún día se cambia la foto del hero. */
+  text-shadow: 0 1px 2px oklch(15% 0.02 100 / 0.45);
 }
 
 /* Títulos (serif) */
@@ -128,19 +142,21 @@ a:hover { color: var(--av-link-hover); }
 .av-fs-19 { font-size: 19px; }
 .av-fs-21 { font-size: 21px; }
 .av-fs-22 { font-size: 22px; }
-.av-fs-26 { font-size: 26px; }
-.av-fs-27 { font-size: 27px; }
-.av-fs-28 { font-size: 28px; }
-.av-fs-30 { font-size: 30px; }
-.av-fs-32 { font-size: 32px; }
-.av-fs-34 { font-size: 34px; }
-.av-fs-38 { font-size: 38px; }
-.av-fs-46 { font-size: 46px; line-height: 1.12; }
+/* De .av-fs-26 hacia arriba el tamaño es fluido: el valor de siempre en
+   escritorio y uno legible en móvil, sin necesidad de media queries. */
+.av-fs-26 { font-size: clamp(21px, 4.4vw, 26px); }
+.av-fs-27 { font-size: clamp(21px, 4.6vw, 27px); }
+.av-fs-28 { font-size: clamp(22px, 4.8vw, 28px); }
+.av-fs-30 { font-size: clamp(23px, 5.2vw, 30px); }
+.av-fs-32 { font-size: clamp(24px, 5.6vw, 32px); }
+.av-fs-34 { font-size: clamp(25px, 6vw, 34px); }
+.av-fs-38 { font-size: clamp(26px, 6.6vw, 38px); }
+.av-fs-46 { font-size: clamp(30px, 8vw, 46px); line-height: 1.12; }
 
 /* Texto de párrafo */
 .av-text { font-family: var(--av-font-sans); font-size: 15.5px; line-height: 1.7; color: var(--av-body); margin: 0; }
 .av-text--16 { font-size: 16px; }
-.av-lead { font-family: var(--av-font-serif); font-size: 22px; line-height: 1.55; color: oklch(26% 0.02 60); margin: 0; }
+.av-lead { font-family: var(--av-font-serif); font-size: clamp(18px, 3.4vw, 22px); line-height: 1.55; color: oklch(26% 0.02 60); margin: 0; }
 
 /* Márgenes reutilizables */
 .av-mb-6  { margin-bottom: 6px; }
@@ -237,12 +253,12 @@ a:hover { color: var(--av-link-hover); }
 }
 .av-nav__inner {
   max-width: 1200px; margin: 0 auto;
-  padding: 14px 32px;
+  padding: 14px var(--av-gutter);
   display: flex; align-items: center; justify-content: space-between;
   gap: 24px; flex-wrap: wrap;
 }
 .av-nav__brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.av-nav__logo  { height: 85px; width: auto; display: block; }
+.av-nav__logo  { height: clamp(52px, 9vw, 85px); width: auto; display: block; }
 .av-nav__brand-text {
   font-family: var(--av-font-serif); font-weight: 600; font-size: 20px;
   color: oklch(30% 0.03 60); letter-spacing: 0.01em;
@@ -254,13 +270,38 @@ a:hover { color: var(--av-link-hover); }
 a.av-link { text-decoration: none; }
 a.av-link:hover { color: var(--av-accent) !important; }
 
+/* Botón hamburguesa. Oculto en escritorio; el bloque de móvil lo muestra.
+   Las tres barras son un span y sus dos pseudoelementos. */
+.av-nav__toggle {
+  display: none;
+  width: 44px; height: 44px;
+  align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--av-border);
+  border-radius: 4px; cursor: pointer; color: var(--av-ink);
+  flex-shrink: 0; padding: 0;
+}
+.av-nav__toggle:focus-visible { outline: 2px solid var(--av-accent); outline-offset: 2px; }
+.av-nav__burger { position: relative; }
+.av-nav__burger, .av-nav__burger::before, .av-nav__burger::after {
+  display: block; width: 20px; height: 2px;
+  background: currentColor; border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.av-nav__burger::before, .av-nav__burger::after { content: ''; position: absolute; }
+.av-nav__burger::before { transform: translateY(-6px); }
+.av-nav__burger::after  { transform: translateY(6px); }
+/* Con el menú abierto las barras se cruzan en una equis. */
+.av-nav__toggle[aria-expanded="true"] .av-nav__burger { background: transparent; }
+.av-nav__toggle[aria-expanded="true"] .av-nav__burger::before { transform: rotate(45deg); }
+.av-nav__toggle[aria-expanded="true"] .av-nav__burger::after  { transform: rotate(-45deg); }
+
 /* ---------------------------------------------------------------------------
    7. Footer
    --------------------------------------------------------------------------- */
 .av-footer { background: var(--av-dark); color: oklch(94% 0.01 90); }
 .av-footer__inner {
   max-width: 1200px; margin: 0 auto;
-  padding: 48px 32px 28px;
+  padding: 48px var(--av-gutter) 28px;
   display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px;
 }
 .av-footer__brand { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
@@ -279,7 +320,7 @@ a.av-link:hover { color: var(--av-accent) !important; }
 .av-footer__ig   { display: inline-flex; align-items: center; gap: 8px; color: oklch(85% 0.015 90); text-decoration: none; margin-top: 4px; }
 .av-footer__copy {
   border-top: 1px solid oklch(40% 0.03 110);
-  padding: 16px 32px; text-align: center;
+  padding: 16px var(--av-gutter); text-align: center;
   font-family: var(--av-font-sans); font-size: 12.5px; color: oklch(70% 0.015 90);
 }
 
@@ -291,22 +332,45 @@ a.av-link:hover { color: var(--av-accent) !important; }
 /* ---------------------------------------------------------------------------
    8. Hero
    --------------------------------------------------------------------------- */
-.av-hero { position: relative; overflow: hidden; }
-.av-hero--560 { height: 560px; }
-.av-hero--340 { height: 340px; }
-.av-hero--300 { height: 300px; }
+/* Altura *mínima*, no fija: en móvil el titular ocupa más líneas y antes el
+   overflow:hidden recortaba los botones. Con min-height el hero crece. */
+.av-hero { position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.av-hero--560 { min-height: 560px; }
+.av-hero--340 { min-height: 340px; }
+.av-hero--300 { min-height: 300px; }
 .av-hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .av-hero__img--low { object-position: center 30%; }
 .av-hero__overlay { position: absolute; inset: 0; }
-.av-hero__overlay--gradient { background: linear-gradient(90deg, oklch(22% 0.03 100 / 0.72) 0%, oklch(22% 0.03 100 / 0.32) 55%, oklch(22% 0.03 100 / 0.08) 100%); }
-.av-hero__overlay--55 { background: oklch(20% 0.03 100 / 0.55); }
-.av-hero__overlay--50 { background: oklch(20% 0.03 100 / 0.5); }
+/* Dos capas. La horizontal es la de siempre, la del degradado editorial de
+   izquierda a derecha, pero con más cuerpo. La vertical de arriba es la que
+   faltaba: el antetítulo va en lo más alto del hero, justo sobre el cielo,
+   que es la zona más clara de la foto; sin ella ni el texto blanco llegaba
+   al mínimo de contraste. */
+.av-hero__overlay--gradient {
+  background:
+    linear-gradient(180deg, oklch(16% 0.03 100 / 0.60) 0%, oklch(16% 0.03 100 / 0) 48%),
+    linear-gradient(90deg,
+      oklch(18% 0.03 100 / 0.90) 0%,
+      oklch(18% 0.03 100 / 0.74) 42%,
+      oklch(18% 0.03 100 / 0.45) 70%,
+      oklch(18% 0.03 100 / 0.18) 100%);
+}
+.av-hero__overlay--55 { background: oklch(18% 0.03 100 / 0.62); }
+.av-hero__overlay--50 { background: oklch(18% 0.03 100 / 0.58); }
 .av-hero__inner {
-  position: relative; max-width: 1200px; margin: 0 auto; height: 100%;
-  display: flex; flex-direction: column; justify-content: center; padding: 0 32px;
+  position: relative; margin: 0 auto; flex: 1;
+  /* Como hijo flex hace falta width:100%, y con relleno eso obliga a
+     border-box; si no, el ancho se pasa y el hero (overflow:hidden) recorta
+     el texto por la derecha. El max-width suma los dos rellenos para que la
+     caja de texto quede exactamente donde estaba: 1200px útiles, igual que
+     .av-container. */
+  width: 100%; box-sizing: border-box;
+  max-width: calc(1200px + var(--av-gutter) * 2);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 28px var(--av-gutter);
 }
 .av-hero-title { font-family: var(--av-font-serif); color: #fff; margin: 0; }
-.av-hero-text  { font-family: var(--av-font-sans); font-size: 17px; line-height: 1.6; color: oklch(94% 0.01 90); margin: 0; }
+.av-hero-text  { font-family: var(--av-font-sans); font-size: clamp(15px, 3vw, 17px); line-height: 1.6; color: oklch(94% 0.01 90); margin: 0; }
 .av-hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
 
 /* ---------------------------------------------------------------------------
@@ -327,7 +391,7 @@ a.av-link:hover { color: var(--av-accent) !important; }
 .av-obj-text { font-family: var(--av-font-sans); font-size: 15px; line-height: 1.6; color: var(--av-ink-2); margin: 0; }
 
 /* Logos de asociados (home) */
-.av-partners { display: flex; align-items: center; justify-content: center; gap: 64px; flex-wrap: wrap; }
+.av-partners { display: flex; align-items: center; justify-content: center; gap: clamp(28px, 6vw, 64px); flex-wrap: wrap; }
 .av-partner { display: block; transition: transform 0.2s ease; }
 /* Caja común para todos los logos de socios: se limitan ancho Y alto a la vez,
    así un logotipo ancho queda topado por el ancho y uno compacto por el alto,
@@ -443,7 +507,7 @@ a.av-link:hover { color: var(--av-accent) !important; }
 
 /* Fila de cifras (stat tiles) */
 .av-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
-.av-stat__num { font-family: var(--av-font-serif); font-size: 42px; font-weight: 600; line-height: 1.1; color: var(--av-accent-strong); margin-bottom: 10px; }
+.av-stat__num { font-family: var(--av-font-serif); font-size: clamp(27px, 4.4vw, 42px); font-weight: 600; line-height: 1.1; color: var(--av-accent-strong); margin-bottom: 10px; }
 .av-stat__label { font-family: var(--av-font-sans); font-size: 14px; line-height: 1.5; color: var(--av-body); }
 .av-stats--on-dark .av-stat__num { color: oklch(78% 0.12 60); }
 .av-stats--on-dark .av-stat__label { color: oklch(88% 0.015 90); }
@@ -538,7 +602,163 @@ a.av-link:hover { color: var(--av-accent) !important; }
 .av-msg__mail { font-family: var(--av-font-sans); font-size: 13.5px; color: var(--av-accent-link); }
 .av-msg__body { font-family: var(--av-font-sans); font-size: 14.5px; line-height: 1.7; color: var(--av-body); margin: 0; white-space: normal; }
 
-/* Rejilla de objetivos: una columna en pantallas angostas */
-@media (max-width: 860px) {
-  .av-objgrid { grid-template-columns: 1fr; }
+/* ---------------------------------------------------------------------------
+   14. Móvil y tablet
+   --------------------------------------------------------------------------
+   Toda la hoja está escrita para escritorio: las grillas traen un número fijo
+   de columnas (repeat(3, 1fr), 220px 1fr, …) que en un teléfono no caben y
+   provocaban scroll horizontal. Aquí se van deshaciendo por tramos.
+
+   Puntos de corte:
+     1060px  la barra de navegación pasa a menú hamburguesa
+      900px  las grillas de 3 y 4 columnas bajan a 2; los pares se apilan
+      700px  todo a una columna; tamaños pensados para el pulgar
+      520px  ajustes finos de teléfono angosto
+   --------------------------------------------------------------------------- */
+
+/* Un hijo de grilla tiene min-width:auto: una palabra larga o una imagen
+   ensancha la columna y con ella toda la página. Esto lo impide. */
+.av-split > *, .av-grid-3 > *, .av-grid-2 > *, .av-stats > *,
+.av-socio > *, .av-contact > *, .av-footer__inner > *, .av-markets > *,
+.av-benefits > *, .av-form__row > *, .av-form-2col > *, .av-objgrid > * {
+  min-width: 0;
 }
+
+/* --- 1060px · menú hamburguesa --------------------------------------------
+   El corte es 1060 y no un número redondo porque por debajo de 1053px la
+   fila de enlaces ya no cabe junto al logo y se descuelga a un segundo
+   renglón. Si se cambia una etiqueta del menú, conviene volver a medirlo. */
+@media (max-width: 1060px) {
+  .av-nav__inner { gap: 12px; padding-top: 10px; padding-bottom: 10px; }
+  .av-nav__toggle { display: inline-flex; }
+
+  /* La lista pasa a ser un panel desplegable a lo ancho de la barra. */
+  .av-nav__links {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 2px;
+    border-top: 1px solid var(--av-border-soft);
+    max-height: calc(100dvh - 120px);
+    overflow-y: auto;
+  }
+  .av-nav__links.is-open { display: flex; }
+  .av-nav__links .av-link {
+    padding: 14px 2px;
+    font-size: 16px;
+    border-bottom: 1px solid var(--av-border-soft);
+  }
+  .av-nav__links .av-link:last-child { border-bottom: none; }
+}
+
+/* --- 900px · de 3–4 columnas a 2, y los pares se apilan -------------------- */
+@media (max-width: 900px) {
+  .av-split    { grid-template-columns: 1fr; gap: 32px; }
+  .av-grid-3   { grid-template-columns: repeat(2, 1fr); }
+  .av-objgrid  { grid-template-columns: repeat(2, 1fr); }
+  .av-stats    { grid-template-columns: repeat(2, 1fr); gap: 28px 20px; }
+  .av-footer__inner { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .av-footer__inner > :first-child { grid-column: 1 / -1; }
+
+  /* Las fotos dejan de tener alto fijo: con object-fit:cover un alto de 340px
+     sobre un ancho de teléfono recortaba media imagen. Con aspect-ratio se
+     ve completa y encoge en proporción. */
+  .av-figure--340, .av-figure--320 { height: auto; aspect-ratio: 16 / 10; }
+
+  /* El degradado horizontal supone que el texto vive en la mitad izquierda.
+     En móvil ocupa todo el ancho, así que su final caía sobre la parte casi
+     descubierta. Aquí se cambia por un velo parejo. */
+  .av-hero__overlay--gradient {
+    background: linear-gradient(180deg,
+      oklch(16% 0.03 100 / 0.72) 0%,
+      oklch(16% 0.03 100 / 0.62) 55%,
+      oklch(16% 0.03 100 / 0.72) 100%);
+  }
+  .av-hero__overlay--55 { background: oklch(18% 0.03 100 / 0.66); }
+  .av-hero__overlay--50 { background: oklch(18% 0.03 100 / 0.64); }
+
+  /* Contacto: la columna oscura pasa arriba del formulario. */
+  .av-contact { grid-template-columns: 1fr; }
+  .av-contact__aside { border-radius: 4px 4px 0 0; padding: 36px 26px; }
+  .av-contact__aside-title { font-size: clamp(24px, 5.4vw, 32px); max-width: none; }
+  .av-contact__aside-text  { max-width: none; }
+  .av-contact__meta { margin-top: 32px; }
+  .av-contact__main { padding: 40px 0 48px; }
+}
+
+/* --- 700px · una sola columna --------------------------------------------- */
+@media (max-width: 700px) {
+  .av-grid-3, .av-grid-2, .av-objgrid,
+  .av-benefits, .av-markets,
+  .av-form__row, .av-form-2col { grid-template-columns: 1fr; }
+  .av-footer__inner { grid-template-columns: 1fr; }
+
+  /* Los heros bajan de alto: 560px en un teléfono es casi la pantalla entera. */
+  .av-hero--560 { min-height: 440px; }
+  .av-hero--340 { min-height: 250px; }
+  .av-hero--300 { min-height: 220px; }
+
+  /* Medidas pensadas para una columna ancha de escritorio: en móvil dejarían
+     el titular en una tira de tres palabras por línea. */
+  .av-mw-15ch, .av-mw-16ch { max-width: none; }
+
+  /* Tarjeta de socio: el logo arriba y la descripción debajo. */
+  .av-socio { grid-template-columns: 1fr; }
+  .av-socio__logo {
+    border-right: none;
+    border-bottom: 1px solid var(--av-border-soft);
+    padding: 24px;
+  }
+  .av-socio__body { padding: 22px 24px; }
+
+  /* Portadas de noticias: mismo criterio que las fotos de sección. */
+  .av-news-img--170, .av-news-img--180 { height: auto; aspect-ratio: 16 / 9; }
+
+  /* Un input de menos de 16px hace que iOS acerque la página al enfocarlo,
+     y al salir del campo no vuelve a su sitio: de ahí la sensación de que
+     "la pantalla se mueve". */
+  .av-field input, .av-field textarea, .av-input, .av-file-note { font-size: 16px; }
+
+  /* Menos aire vertical: en escritorio son respiros, en móvil son pantallas
+     enteras en blanco que obligan a rodar. */
+  .av-py-90  { padding-top: 56px; padding-bottom: 56px; }
+  .av-py-72  { padding-top: 48px; padding-bottom: 48px; }
+  .av-py-64  { padding-top: 44px; padding-bottom: 44px; }
+  .av-pt-64  { padding-top: 44px; }
+  .av-pt-56  { padding-top: 40px; }
+  .av-pt-48  { padding-top: 34px; }
+  .av-pb-100 { padding-bottom: 60px; }
+  .av-pb-90  { padding-bottom: 56px; }
+  .av-mb-40  { margin-bottom: 28px; }
+  .av-mb-36  { margin-bottom: 26px; }
+
+  /* Tabla nutricional: cabe más y, si aún no cabe, .av-ntable-wrap la desliza. */
+  .av-ntable { font-size: 13.5px; }
+  .av-ntable th { padding: 10px 10px; }
+  .av-ntable td { padding: 9px 10px; }
+
+  /* Panel de administración */
+  .av-admin-session { flex-wrap: wrap; gap: 12px; }
+  .av-row-item { flex-wrap: wrap; }
+  .av-btn-row { flex-wrap: wrap; }
+}
+
+/* --- 520px · teléfono angosto --------------------------------------------- */
+@media (max-width: 520px) {
+  /* Cifras: dos columnas siguen leyéndose mejor que una lista larga. */
+  .av-stats { gap: 24px 16px; }
+  .av-obj-card { padding: 20px 18px; gap: 12px; }
+  .av-prop-card { padding: 20px 18px; }
+  .av-market { padding: 20px 18px; }
+  .av-news-body { padding: 16px 18px; }
+  .av-contact__aside { padding: 30px 20px; }
+
+  /* Los botones del hero pasan a ancho completo: objetivo de toque cómodo. */
+  .av-hero-actions { gap: 10px; }
+  .av-hero-actions .av-btn { flex: 1 1 100%; text-align: center; }
+}
+
+/* Deslizamiento suave de las cajas que sí pueden desbordar a propósito
+   (tabla nutricional y gráficos), sin arrastrar la página con ellas. */
+.av-ntable-wrap { overscroll-behavior-x: contain; }
