@@ -55,6 +55,15 @@
   gap: 27px;
 }
 
+/* Las .card son celdas de una grilla 1fr, que equivale a minmax(auto, 1fr):
+   el mínimo automático estira la celda hasta el ancho del gráfico y con ella
+   la página entera. Con min-width:0 la celda manda y el gráfico se desliza
+   dentro de .js-chart. */
+.avena-dashboard-wrap .grid > *,
+.avena-dashboard-wrap .card {
+  min-width: 0;
+}
+
 .avena-dashboard-wrap .card {
   background: var(--av-surface);
   border: 1px solid var(--av-border);
@@ -65,6 +74,15 @@
 
 .avena-dashboard-wrap .controls {
   margin-bottom: 20px;
+}
+
+/* Varias .controls son flex por atributo style. Un hijo flex tiene
+   min-width:auto y se niega a encoger por debajo de su contenido: el
+   <select> de 320px ensanchaba la fila y con ella la página en pantallas
+   muy angostas. */
+.avena-dashboard-wrap .controls > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .avena-dashboard-wrap .label {
@@ -192,9 +210,34 @@
   overflow-x: auto;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 700px) {
   .avena-dashboard-wrap {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: var(--av-gutter);
+    padding-right: var(--av-gutter);
   }
+
+  /* La caja de cada gráfico ocupa casi todo el ancho: sin tanto relleno
+     interno queda más superficie para el dibujo. */
+  .avena-dashboard-wrap .card { padding: 14px 12px; border-radius: 8px; }
+
+  /* Objetivos de toque: los años y los botones de país se pulsan con el dedo. */
+  .avena-dashboard-wrap .year-btn,
+  .avena-dashboard-wrap .toggle-btn,
+  .avena-dashboard-wrap .compare-actions button {
+    padding: 9px 14px;
+    font-size: 15px;
+  }
+  .avena-dashboard-wrap .country-item { padding: 7px 0; font-size: 15px; }
+  .avena-dashboard-wrap .country-list { max-height: 220px; }
+
+  /* Un select o un input de menos de 16px hace que iOS acerque la página. */
+  .avena-dashboard-wrap select,
+  .avena-dashboard-wrap .js-countrySearch { font-size: 16px; padding: 9px 10px; }
+
+  /* Los desplegables ocupan la fila entera: más fáciles de pulsar y nunca
+     empujan el ancho del contenedor. */
+  .avena-dashboard-wrap select { width: 100%; box-sizing: border-box; }
+
+  /* Los controles de año se apilan en vez de comprimir la botonera. */
+  .avena-dashboard-wrap .year-controls { align-items: flex-start; flex-wrap: wrap; }
 }

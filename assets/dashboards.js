@@ -2,6 +2,11 @@ let _resizeTimer = null;
 
 google.charts.load("current", { packages: ["corechart", "geochart", "sankey"] });
 
+// Bloques de tipo Dashboard vivos: se guardan para poder redibujarlos cuando
+// cambia el ancho. Google Charts dibuja a un ancho fijo calculado en el
+// momento; al girar el teléfono el SVG se quedaba con la medida anterior.
+const _chartBlocks = [];
+
 google.charts.setOnLoadCallback(() => {
   document.querySelectorAll("section.dashboard").forEach((sec) => {
     const dash = new Dashboard(sec);
@@ -9,8 +14,43 @@ google.charts.setOnLoadCallback(() => {
   });
 
   document.querySelectorAll(".single-chart").forEach(sec => initSingleChart(sec));
+
+  // Los .single-chart ya traen su propio listener de resize; estos no.
+  window.addEventListener("resize", () => {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => {
+      _chartBlocks.forEach(b => { if (b.yearRows.length) b.redraw(); });
+    }, 200);
+  });
 });
 
+
+/* --- Ayudas para pantallas angostas -----------------------------------------
+   Google Charts reparte el ancho disponible entre todas las categorías. Con
+   cien países en 350px las barras quedan en un pelo y las etiquetas
+   desaparecen. Bajo 700px se dibuja el gráfico más ancho que su caja y lo
+   desliza .js-chart, que ya tiene overflow-x:auto para eso.
+   En escritorio no cambia nada: estas funciones devuelven el valor de siempre.
+   ---------------------------------------------------------------------------- */
+const MOVIL_MAX = 700;
+const ANCHO_MIN_BARRA = 26;
+
+function esMovil() {
+  return window.innerWidth <= MOVIL_MAX;
+}
+
+/** Ancho en píxeles para un gráfico de columnas, o null para dejarlo fluido. */
+function anchoColumnas(chartEl, nBarras) {
+  if (!esMovil()) return null;
+  const disponible = chartEl.clientWidth || 0;
+  const necesario = nBarras * ANCHO_MIN_BARRA + 90; // 90 ≈ el eje vertical
+  return necesario > disponible ? necesario : null;
+}
+
+/** El margen izquierdo de las barras horizontales: 180px no caben en un móvil. */
+function margenEtiquetas(px) {
+  return esMovil() ? Math.min(px, 105) : px;
+}
 
 function parseNum(val) {
   if (val == null) return NaN;
@@ -230,6 +270,7 @@ class ChartBlock {
     this.yearRows = [];
     this.chartEl = blockEl.querySelector(".js-chart");
     this.filter = new CountryFilter(blockEl, () => this.redraw());
+    _chartBlocks.push(this);
   }
 
   init() {
@@ -263,12 +304,15 @@ class ChartBlock {
     dt.addRows(rows);
 
     if (this.type === "bar") {
-      new google.visualization.ColumnChart(this.chartEl).draw(dt, {
+      const opciones = {
         legend: { position: "none" },
         vAxis: { title: this.dash.yLabel },
         hAxis: { title: "País", slantedText: true, slantedTextAngle: 60, textStyle: { fontSize: 9 } },
         chartArea: { left: 70, right: 20, top: 20, bottom: 140, width: "100%", height: "75%" }
-      });
+      };
+      const ancho = anchoColumnas(this.chartEl, rows.length);
+      if (ancho) opciones.width = ancho;
+      new google.visualization.ColumnChart(this.chartEl).draw(dt, opciones);
     } else {
       new google.visualization.GeoChart(this.chartEl).draw(dt, {
         colorAxis: { colors: ["#ffffff", "#1f4aa8"] },
@@ -347,7 +391,7 @@ const chartHandlers = {
 
       new google.visualization.BarChart(chartDiv).draw(dt, {
         title: sec.dataset.title || "", legend: { position: "none" }, bars: "horizontal",
-        chartArea: { left: 180, right: 30, top: 60, bottom: 40, width: "100%", height: "70%" },
+        chartArea: { left: margenEtiquetas(180), right: 30, top: 60, bottom: 40, width: "100%", height: "70%" },
         hAxis: { title: "Ton" }
       });
     };
@@ -460,7 +504,7 @@ const chartHandlers = {
       new google.visualization.BarChart(chartDiv).draw(dt, {
         title: `${mode === "export" ? "Exportaciones" : "Importaciones"} - Año ${curYear} - Código ${curCode}`,
         legend: { position: "none" }, bars: "horizontal",
-        chartArea: { left: 180, right: 30, top: 60, bottom: 40, width: "100%", height: "70%" },
+        chartArea: { left: margenEtiquetas(180), right: 30, top: 60, bottom: 40, width: "100%", height: "70%" },
         hAxis: { title: "Toneladas" }
       });
     };

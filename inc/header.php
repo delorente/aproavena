@@ -13,13 +13,13 @@ $pageDesc  = $pageDesc  ?? 'Asociación de Procesadores de Avena de Chile A.G. R
 $pageHead  = $pageHead  ?? '';
 
 $navLinks = [
-    ['inicio',     'Inicio',              ''],
-    ['quienes',    'Quiénes somos',       'quienes-somos.php'],
-    ['avena',      'La Avena',            'la-avena.php'],
-    ['directorio', 'Directorio y socios', 'directorio.php'],
-    ['noticias',   'Noticias',            'noticias.php'],
-    ['graficos',   'Gráficos',            'avena-dashboard.php'],
-    ['contacto',   'Contacto',            'contacto.php'],
+    ['inicio',     'Inicio',                ''],
+    ['quienes',    'Quiénes somos',         'quienes-somos.php'],
+    ['avena',      'La Avena',              'la-avena.php'],
+    ['directorio', 'Directorio y socios',   'directorio.php'],
+    ['noticias',   'Noticias',              'noticias.php'],
+    ['graficos',   'Datos de la industria', 'avena-dashboard.php'],
+    ['contacto',   'Contacto',              'contacto.php'],
 ];
 ?>
 <!DOCTYPE html>
@@ -36,7 +36,7 @@ $navLinks = [
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="<?= e(url('assets/styles.css')) ?>">
+<link rel="stylesheet" href="<?= e(asset('assets/styles.css')) ?>">
 <?php /* Ya viene escapado por quien lo define: son etiquetas, no texto. */ ?>
 <?= $pageHead ?>
 </head>
@@ -48,7 +48,12 @@ $navLinks = [
       <img src="<?= e(url('assets/logo-aproavena.png')) ?>" alt="Aproavena" class="av-nav__logo">
       <span class="av-nav__brand-text">Aproavena</span>
     </a>
-    <nav class="av-nav__links">
+    <?php /* Solo visible bajo 1000px; lo mueve assets/nav.js. */ ?>
+    <button type="button" class="av-nav__toggle" aria-label="Abrir menú"
+            aria-controls="av-nav-links" aria-expanded="false">
+      <span class="av-nav__burger"></span>
+    </button>
+    <nav class="av-nav__links" id="av-nav-links">
       <?php foreach ($navLinks as [$key, $label, $href]): ?>
         <a class="av-link<?= $key === $activeNav ? ' av-link--active' : '' ?>"
            href="<?= e(url($href)) ?>"><?= e($label) ?></a>
@@ -56,3 +61,4 @@ $navLinks = [
     </nav>
   </div>
 </header>
+<script src="<?= e(asset('assets/nav.js')) ?>" defer></script>
