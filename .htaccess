@@ -11,6 +11,10 @@ DirectoryIndex index.php index.html
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  # El entorno local no tiene certificado: sin estas dos lineas, WAMP
+  # redirige a un https://localhost que no responde.
+  RewriteCond %{HTTP_HOST} !^localhost [NC]
+  RewriteCond %{HTTP_HOST} !^127\.0\.0\.1
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 </IfModule>
 
